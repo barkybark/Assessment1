@@ -4,6 +4,7 @@ import openai
 from docx import Document
 import random
 import textwrap
+from openai import OpenAI
 
 # General Setting
 st.set_page_config(page_title="Guesstimation Trainer", layout="centered")
