@@ -28,15 +28,16 @@ BOOK_PATH = "guesstimation.docx"
 book_content = load_docx(BOOK_PATH)
 
 # Function to call GPT API
-def call_gpt(prompt, temperature=0.5):
-    """GPT API 호출 함수"""
+def ask_gpt(prompt):
     response = openai.ChatCompletion.create(
-        model="gpt-4",  
-        messages=[{"role": "user", "content": prompt}],
-        temperature=temperature
+        model="gpt-4o", 
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant that creates and evaluates guesstimation problems for people who does not have an enough time to go through guesstimation book."},
+            {"role": "system", "content": prompt}
+        ],
+        temperature=0.7
     )
-    return response.choices[0].message['content']
-
+    return response.choices[0].message["content"]
 
 # ======== 메인 UI ========
 
