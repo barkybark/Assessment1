@@ -37,6 +37,26 @@ def call_gpt(prompt, temperature=0.5):
     )
     return response.choices[0].message['content']
 
+
+# ======== 메인 UI ========
+
+# 페이지 기본 설정
+st.set_page_config(
+    page_title="Guesstimation AI Trainer",
+    page_icon="🎯",
+    layout="centered"
+)
+
+
+st.title("🎯 Guesstimation Trainer")
+st.markdown(
+    """
+    **환영합니다!**  
+    이 앱은 게스티메이션 책을 기준으로 공부를 하기 위한 AI 기반 학습 도구입니다.  
+    아래에서 모드를 선택하세요.
+    """
+)
+
 col1, col2 = st.columns(2)
 with col1:
     daily_mode = st.button("📅 데일리 액세사이즈", use_container_width=True)
@@ -109,36 +129,3 @@ if study_mode:
             eval_prompt = f"문제: {q_text}\n답변: {ans}\n이 답변을 평가하고 모범 답안을 제시해주세요."
             feedback = ask_gpt(eval_prompt)
             st.markdown(feedback)
-
-# ======== 메인 UI ========
-
-# 페이지 기본 설정
-st.set_page_config(
-    page_title="Guesstimation AI Trainer",
-    page_icon="🎯",
-    layout="centered"
-)
-
-
-st.title("🎯 Guesstimation Trainer")
-st.markdown(
-    """
-    **환영합니다!**  
-    이 앱은 게스티메이션 책을 기준으로 공부를 하기 위한 AI 기반 학습 도구입니다.  
-    아래에서 모드를 선택하세요.
-    """
-)
-
-col1, col2 = st.columns(2)
-with col1:
-    if st.button("📅 Daily Exercise"):
-        st.session_state.mode = "daily"
-with col2:
-    if st.button("📚 Study Mode"):
-        st.session_state.mode = "study"
-
-if "mode" in st.session_state:
-    if st.session_state.mode == "daily":
-        daily_exercise_mode()
-    elif st.session_state.mode == "study":
-        study_mode()
