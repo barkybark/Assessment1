@@ -29,13 +29,13 @@ book_content = load_docx(BOOK_PATH)
 
 # Function to call GPT API
 def ask_gpt(prompt):
-    response = openai.ChatCompletion.create(
+    response = client.chat.completions.create(
         model="gpt-4o", 
         messages=[
             {"role": "system", "content": "You are a helpful assistant that creates and evaluates guesstimation problems for people who does not have an enough time to go through guesstimation book."},
             {"role": "system", "content": prompt}
         ],
-        temperature=0.7
+        temperature=0.8
     )
     return response.choices[0].message["content"]
 
