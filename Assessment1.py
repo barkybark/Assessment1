@@ -10,6 +10,8 @@ st.set_page_config(page_title="Guesstimation Trainer", layout="centered")
 
 # Call OpenAI API
 openai.api_key = st.secrets["OPENAI_API_KEY"]
+# OpenAI 클라이언트 생성
+client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
 
 # load docx file
 @st.cache_data
