@@ -43,9 +43,9 @@ with col1:
 with col2:
     study_mode = st.button("📚 공부 모드", use_container_width=True)
 
-    
+
 if daily_mode:
-  st.subheader("📅 오늘의 문제")
+    st.subheader("📅 오늘의 문제")
     # 책 내용 기반으로 GPT가 문제 생성
     question_prompt = f"""
      In the below BOOK:, I've provided you with the Guesstimation book that you are going to use. 
