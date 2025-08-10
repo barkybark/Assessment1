@@ -36,11 +36,19 @@ def call_gpt(prompt, temperature=0.5):
         temperature=temperature
     )
     return response.choices[0].message['content']
+
+col1, col2 = st.columns(2)
+with col1:
+    daily_mode = st.button("📅 데일리 액세사이즈", use_container_width=True)
+with col2:
+    study_mode = st.button("📚 공부 모드", use_container_width=True)
+
+    
 if daily_mode:
-    st.subheader("📅 오늘의 문제")
+  st.subheader("📅 오늘의 문제")
     # 책 내용 기반으로 GPT가 문제 생성
     question_prompt = f"""
-    In the below BOOK:, I've provided you with the Guesstimation book that you are going to use. 
+     In the below BOOK:, I've provided you with the Guesstimation book that you are going to use. 
     You are supposed to create a Guesstimation problem based on the book content for a student who does not have a time to read the book.
     Greet the student and create a random problem based on the book content, and just a single question.
     Provide the question in Korean.
