@@ -78,7 +78,7 @@ if daily_mode:
     Provide the question in Korean.
     ###
     BOOK:
-    {book_content}  # token 제한 있으면 앞부분 일부만 전달 [:4000]
+    {book_content[:4000]}  # token 제한 있으면 앞부분 일부만 전달 [:4000]
     ###
     """
     question = ask_gpt(question_prompt)
