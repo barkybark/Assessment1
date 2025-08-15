@@ -85,22 +85,33 @@ if daily_mode:
     st.markdown(f"{question}")
 
     user_answer = st.text_area("✏️ 당신의 답변을 입력하세요", height=150)
-    if st.button("제출"):
-        eval_prompt = f"""
-        The ANSWER below provides the user's answer to the question.
-        Please do the following:
-        1. Score the answer from 0 to 100 based on its accuracy.
-        2. Provide feedback on the answer if the score is not 100, including:
-            1. What is good about the answer
-            2. Areas for improvement
-        3. Provide a model answer.
+   if st.button("제출"):
+        if user_answer.strip():
+            eval_prompt = f"""
+            The ANSWER below provides the user's answer to the question.
+            Please do the following:
+            1. Score the answer from 0 to 100 based on its accuracy.
+            2. Provide feedback on the answer if the score is not 100, including:
+                1. What is good about the answer
+                2. Areas for improvement
+            3. Provide a model answer.
 
-        ###
-        QUESTION: {question}
-        ANSWER: {user_answer}
-        """
-        feedback = ask_gpt(eval_prompt)
-        st.markdown(feedback)
+            ###
+            QUESTION: {st.session_state.daily_question}
+            ANSWER: {user_answer}
+            """
+            feedback = ask_gpt(eval_prompt)
+            st.markdown("#### 📊 평가 결과")
+            st.markdown(feedback)
+
+            # 문제와 답변 유지 (필요하면 제거 가능)
+            st.session_state.daily_answer = user_answer
+        else:
+            st.warning("답변을 입력하세요.")
+
+    # 이전 답변 표시
+    if "daily_answer" in st.session_state:
+        st.markdown(f"**이전 답변:** {st.session_state.daily_answer}")
 
 # -------------------------------
 # 7. 공부 모드
