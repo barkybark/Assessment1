@@ -112,7 +112,7 @@ if daily_mode:
                 st.markdown(feedback)
 
                 # 문제와 답변 유지 (필요하면 제거 가능)
-            st.session_state.daily_answer = user_answer
+                st.session_state.daily_answer = user_answer
             else:
                 
                 st.warning("답변을 입력하세요.")
