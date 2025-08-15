@@ -85,7 +85,7 @@ if daily_mode:
     st.markdown(f"{question}")
 
     user_answer = st.text_area("✏️ 당신의 답변을 입력하세요", height=150)
-   if st.button("제출"):
+    if st.button("제출"):
         if user_answer.strip():
             eval_prompt = f"""
             The ANSWER below provides the user's answer to the question.
