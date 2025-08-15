@@ -94,7 +94,7 @@ if daily_mode:
         button = st.button("제출")
 
         if button:
-             if user_answer.strip():
+        
             eval_prompt = f"""
             The ANSWER below provides the user's answer to the question.
             Please do the following:
