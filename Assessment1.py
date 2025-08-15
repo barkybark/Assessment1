@@ -92,7 +92,9 @@ if daily_mode:
 
         user_answer = st.text_area("✏️ 당신의 답변을 입력하세요", height=150)
         if st.button("제출"):
+            st.write("meow debugging")
             if user_answer.strip():
+                st.write("meow debugging")
                 eval_prompt = f"""
                 The ANSWER below provides the user's answer to the question.
                 Please do the following:
@@ -106,6 +108,7 @@ if daily_mode:
                 QUESTION: {st.session_state.daily_question}
                 ANSWER: {user_answer}
                 """
+                st.write("meow debugging")
                 feedback = ask_gpt(eval_prompt)
                 st.write("meow debugging")
                 st.markdown("#### 📊 평가 결과")
