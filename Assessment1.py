@@ -40,7 +40,7 @@ def ask_gpt(prompt):
         ],
         temperature=0.8
     )
-    return response.choices[0].message["content"]
+    return response.choices[0].message.content
 
 # ======== 메인 UI ========
 
