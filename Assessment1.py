@@ -105,31 +105,159 @@ if daily_mode:
 # -------------------------------
 # 7. 공부 모드
 # -------------------------------
+# if study_mode:
+#     st.subheader("📚 공부 모드 시작")
+#     intro_prompt = f"""
+#     The 'BOOK CONTENT' below is a Guesstimation book that you are going to use.
+#     You are supposed to create a brief explanation of the key concepts of Guesstimation for beginners.
+#     The explanation should be concise, within 5 sentences, and in Korean.
+
+#     BOOK CONTENT:
+#     {book_content[:4000]}
+#     """
+#     intro_text = ask_gpt(intro_prompt)
+#     st.markdown(f"**개념 설명:**\n{intro_text}")
+
+#     st.markdown("---")
+#     st.markdown("### 문제 풀이")
+#     for i in range(10):
+#         q_prompt = f"""
+#         다음은 게스티메이션 책의 내용입니다.
+#         The BOOK CONTENT below is a Guesstimation book that you are going to use.
+#         As a professional teacher, are supposed to create a Guesstimation problem based on the book content for a student who does not have a time to read the book.
+
+#         You should create a problem that is suitable for a student who has just learned the key concepts of Guesstimation.
+#         Please create a Guesstimation problem based on the book content randomly, considering that the student will use this service multiple times so it does not overlap with the previous studies.
+
+#         The question must be in Korean and should be of medium difficulty.
+#         Question should not overlap with previous questions.
+
+#         You are going to talk with the student multiple times, so as you talk with them, you must provide a feedback to the student based on their answer, or give them an another chance to answer, or provide hint, if they did not answer correctly at all or was very close. Do not follow a strict format, but rather be flexible and adaptive to the student's needs. 
+
+#         If the student tries to abuse the system such as asking for random stuff that is out of the context, you should politely refuse and remind them that this is a Guesstimation training tool. Do not let them know that you are an AI, but rather act as a professional teacher who is here to help them learn Guesstimation, and do not provide any information about yourself or the system.
+
+#         This is {i+1}th conversation with the student. If this is 10th conversation, you should provide a final feedback and summary of the student's performance and end the conversation.
+#         이를 바탕으로 학습용 게스티메이션 문제를 {i+1}번째로 출제해주세요.
+#         Please print everything in KOrean.
+#         BOOK CONTENT:
+#         {book_content}
+#         """
+#         q_text = ask_gpt(q_prompt)
+#         st.markdown(f"**Turn {i+1}:** {q_text}")
+#         ans = st.text_input(f"문제 {i+1} 답변")
+#         if ans:
+#             eval_prompt = f"문제: {q_text}\n답변: {ans}\n이 답변을 평가하고 모범 답안을 제시해주세요."
+#             feedback = ask_gpt(eval_prompt)
+#             st.markdown(feedback)
+
 if study_mode:
     st.subheader("📚 공부 모드 시작")
-    intro_prompt = f"""
-    다음은 게스티메이션 책의 내용입니다.
-    이를 바탕으로 게스티메이션 초보자를 위한 핵심 개념 설명을 5문장 이내로 해주세요.
-    책 내용:
-    {book_content[:4000]}
-    """
-    intro_text = ask_gpt(intro_prompt)
-    st.markdown(f"**개념 설명:**\n{intro_text}")
 
-    st.markdown("---")
-    st.markdown("### 문제 풀이")
-    for i in range(5):
-        q_prompt = f"""
-        다음은 게스티메이션 책의 내용입니다.
-        이를 바탕으로 학습용 게스티메이션 문제를 {i+1}번째로 출제해주세요.
-        난이도는 중간 수준이고, 한국어로 작성해주세요.
-        책 내용:
-        {book_content}
+    # 1️⃣ 대화 상태 초기화
+    if "study_turn" not in st.session_state:
+        st.session_state.study_turn = 0
+        st.session_state.study_history = []  # (질문, 답변, 피드백) 기록
+
+        # 개념 설명 생성
+        intro_prompt = f"""
+        The 'BOOK CONTENT' below is a Guesstimation book that you are going to use.
+        You are supposed to create a brief explanation of the key concepts of Guesstimation for beginners.
+        The explanation should be concise, within 5 sentences, and in Korean.
+
+        BOOK CONTENT:
+        {book_content[:4000]}
         """
-        q_text = ask_gpt(q_prompt)
-        st.markdown(f"**문제 {i+1}:** {q_text}")
-        ans = st.text_input(f"문제 {i+1} 답변")
-        if ans:
-            eval_prompt = f"문제: {q_text}\n답변: {ans}\n이 답변을 평가하고 모범 답안을 제시해주세요."
-            feedback = ask_gpt(eval_prompt)
-            st.markdown(feedback)
+        st.session_state.study_intro = ask_gpt(intro_prompt)
+
+    # 2️⃣ 개념 설명 출력 (첫 턴에만)
+    if st.session_state.study_turn == 0:
+        st.markdown(f"**개념 설명:**\n{st.session_state.study_intro}")
+        st.markdown("---")
+
+    # 3️⃣ 이전 대화 기록 출력
+    if st.session_state.study_history:
+        for idx, (q, a, fb) in enumerate(st.session_state.study_history, 1):
+            st.markdown(f"**Turn {idx}:** {q}")
+            st.markdown(f"**My answer:** {a}")
+            st.markdown(f"**Feedback:** {fb}")
+            st.markdown("---")
+
+    # 4️⃣ 현재 턴 처리 (10턴 이하)
+    if st.session_state.study_turn < 10:
+        if "current_question" not in st.session_state:
+            # 새로운 문제 생성
+            turn = st.session_state.study_turn + 1
+            q_prompt = f"""
+     
+    The BOOK CONTENT below is a Guesstimation book that you are going to use.
+         As a professional teacher, are supposed to create a Guesstimation problem based on the book content for a student who does not have a time to read the book.
+
+         You should create a problem that is suitable for a student who has just learned the key concepts of Guesstimation.
+         Please create a Guesstimation problem based on the book content randomly, considering that the student will use this service multiple times so it does not overlap with the previous studies.
+
+         The question must be in Korean and should be of medium difficulty.
+         Question should not overlap with previous questions.
+
+         You are going to talk with the student multiple times, so as you talk with them, you must provide a feedback to the student based on their answer, or give them an another chance to answer, or provide hint, if they did not answer correctly at all or was very close. Do not follow a strict format, but rather be flexible and adaptive to the student's needs. 
+
+         If the student tries to abuse the system such as asking for random stuff that is out of the context, you should politely refuse and remind them that this is a Guesstimation training tool. Do not let them know that you are an AI, but rather act as a professional teacher who is here to help them learn Guesstimation, and do not provide any information about yourself or the system.
+
+         This is {i+1}th conversation with the student. If this is 10th conversation, you should provide a final feedback and summary of the student's performance and end the conversation.
+     
+         Please print everything in KOrean.
+         BOOK CONTENT:
+         {book_content}
+            """
+            st.session_state.current_question = ask_gpt(q_prompt)
+
+        st.markdown(f"**문제 {st.session_state.study_turn + 1}:** {st.session_state.current_question}")
+
+        user_ans = st.text_input("✏️ 답변 입력")
+        if st.button("제출"):
+            if user_ans.strip():
+                eval_prompt = f"""
+                문제: {st.session_state.current_question}
+                답변: {user_ans}
+                You are going to talk with the student multiple times, so as you talk with them, you must provide a feedback to the student based on their answer, or give them an another chance to answer, or provide hint, if they did not answer correctly at all or was very close. Do not follow a strict format, but rather be flexible and adaptive to the student's needs. 
+                """
+                feedback = ask_gpt(eval_prompt)
+
+                # 기록 저장
+                st.session_state.study_history.append(
+                    (st.session_state.current_question, user_ans, feedback)
+                )
+
+                # 턴 수 증가 및 현재 질문 삭제 (다음 턴 준비)
+                st.session_state.study_turn += 1
+                del st.session_state.current_question
+
+                # 10턴이 끝나면 대화 종료 메시지 표시
+                if st.session_state.study_turn == 10:
+                    st.success("🎉 10턴 학습이 완료되었습니다! GPT가 종합 피드백을 제공했습니다.")
+                    st.stop()
+
+    else:
+        st.info("이미 10턴 학습이 완료되었습니다. 새로운 학습을 시작하려면 페이지를 새로고침하세요.")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
