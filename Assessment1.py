@@ -107,6 +107,7 @@ if daily_mode:
                 ANSWER: {user_answer}
                 """
                 feedback = ask_gpt(eval_prompt)
+                st.write("meow debugging")
                 st.markdown("#### 📊 평가 결과")
                 st.markdown(feedback)
 
