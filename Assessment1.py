@@ -91,10 +91,10 @@ if daily_mode:
         st.markdown(f"{question}")
 
         user_answer = st.text_area("✏️ 당신의 답변을 입력하세요", height=150)
-        if st.button("제출"):
-            st.write("meow debugging")
+        button = st.button("제출")
+        if button:
+            st.session_state.button_clicked = True
             if user_answer.strip():
-                st.write("meow debugging")
                 eval_prompt = f"""
                 The ANSWER below provides the user's answer to the question.
                 Please do the following:
@@ -108,9 +108,8 @@ if daily_mode:
                 QUESTION: {st.session_state.daily_question}
                 ANSWER: {user_answer}
                 """
-                st.write("meow debugging")
                 feedback = ask_gpt(eval_prompt)
-                st.write("meow debugging")
+
                 st.markdown("#### 📊 평가 결과")
                 st.markdown(feedback)
 
@@ -236,7 +235,9 @@ if study_mode:
         st.markdown(f"**문제 {st.session_state.study_turn + 1}:** {st.session_state.current_question}")
 
         user_ans = st.text_input("✏️ 답변 입력")
-        if st.button("제출"):
+        button2 = st.button("제출")
+
+        if button2:
             if user_ans.strip():
                 eval_prompt = f"""
                 문제: {st.session_state.current_question}
