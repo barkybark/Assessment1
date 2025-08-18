@@ -67,13 +67,16 @@ def main():
     col1, col2 = st.columns(2)
     with col1:
         if st.button("📅 데일리 액세사이즈", use_container_width=True):
-            st.session_state.mode = "daily"
+            if 'mode' not in st.session_state:
+                st.session_state['mode'] = 'daily'
+ \
     with col2:
         if st.button("📚 공부 모드", use_container_width=True):
-            st.session_state.mode = "study"
+            if 'mode' not in st.session_state:
+                st.session_state['mode'] = 'study'
 
 # daily_mode 유지
-    if st.session_state.mode == "daily":
+    if st.session_state['mode'] == "daily":
         st.subheader("📅 오늘의 문제")
         # 책 내용 기반으로 GPT가 문제 생성
         if "daily_question" not in st.session_state:
@@ -176,7 +179,7 @@ def main():
     #             feedback = ask_gpt(eval_prompt)
     #             st.markdown(feedback)
 
-    if  st.session_state.mode == "study":
+    if  st.session_state['study'] == "study":
         st.subheader("📚 공부 모드 시작")
 
         # 1️⃣ 대화 상태 초기화
