@@ -89,6 +89,7 @@ def main():
             """
             
             question = ask_gpt(question_prompt)
+            st.session_state.daily_question = question
             st.markdown(f"{question}")
 
             user_answer = st.text_area("✏️ 당신의 답변을 입력하세요", height=150)
