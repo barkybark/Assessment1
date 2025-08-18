@@ -42,7 +42,7 @@ def ask_gpt(prompt):
             {"role": "system", "content": "You are a helpful assistant that creates and evaluates guesstimation problems for people who does not have an enough time to go through guesstimation book."},
             {"role": "system", "content": prompt}
         ],
-        temperature=0.8
+        temperature=1.0
     )
     return response.choices[0].message.content
 
@@ -73,7 +73,7 @@ def main():
             st.session_state.mode = "study"
 
 # daily_mode 유지
-    if "mode" in st.session_state and st.session_state.mode == "daily":
+    if "mode" in st.session_state.mode == "daily":
         st.subheader("📅 오늘의 문제")
         # 책 내용 기반으로 GPT가 문제 생성
         if "daily_question" not in st.session_state:
@@ -89,14 +89,19 @@ def main():
             """
             
             question = ask_gpt(question_prompt)
+            st.session_state.daily_question = question
 
             st.markdown(f"{question}")
 
             user_answer = st.text_area("✏️ 당신의 답변을 입력하세요", height=150)
+            
+            # 문제와 답변 유지 (필요하면 제거 가능)
+            st.session_state.daily_answer = user_answer
             button = st.button("제출")
 
             if button:
-            
+                st.write("debug test 1")
+                
                 eval_prompt = f"""
                 The ANSWER below provides the user's answer to the question.
                 Please do the following:
@@ -107,7 +112,7 @@ def main():
                 3. Provide a model answer.
 
                 ###
-                QUESTION: {question}
+                QUESTION: {st.session_state.daily_question}
                 ANSWER: {user_answer}
                 """
                 feedback = ask_gpt(eval_prompt)
@@ -115,8 +120,6 @@ def main():
                 st.markdown("#### 📊 평가 결과")
                 st.markdown(feedback)
 
-                # 문제와 답변 유지 (필요하면 제거 가능)
-                st.session_state.daily_answer = user_answer
 
     
 
