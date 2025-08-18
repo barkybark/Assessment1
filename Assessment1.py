@@ -69,7 +69,7 @@ def main():
         if st.button("📅 데일리 액세사이즈", use_container_width=True):
             if 'mode' not in st.session_state:
                 st.session_state['mode'] = 'daily'
- \
+
     with col2:
         if st.button("📚 공부 모드", use_container_width=True):
             if 'mode' not in st.session_state:
