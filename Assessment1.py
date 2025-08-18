@@ -111,7 +111,7 @@ def main():
                 3. Provide a model answer.
 
                 ###
-                QUESTION: {st.session_state.daily_question}
+                QUESTION: {question}
                 ANSWER: {user_answer}
                 """
                 feedback = ask_gpt(eval_prompt)
