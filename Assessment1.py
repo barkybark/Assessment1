@@ -256,6 +256,7 @@ def main():
                     You are going to talk with the student multiple times, so as you talk with them, you must provide a feedback to the student based on their answer, or give them an another chance to answer, or provide hint, if they did not answer correctly at all or was very close. Do not follow a strict format, but rather be flexible and adaptive to the student's needs. 
                     """
                     feedback = ask_gpt(eval_prompt)
+                    st.markdown(feedback)
 
                     # 기록 저장
                     st.session_state.study_history.append(
