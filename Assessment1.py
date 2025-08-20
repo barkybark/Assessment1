@@ -245,35 +245,37 @@ def main():
 
             st.markdown(f"**문제 {st.session_state.study_turn + 1}:** {st.session_state.current_question}")
 
-            user_ans = st.text_input("✏️ 답변 입력")
-            button2 = st.button("제출")
+           user_ans = st.text_input("✏️ 답변 입력", key=f"answer_{st.session_state.study_turn}")
+button2 = st.button("제출", key=f"submit_{st.session_state.study_turn}")
 
-            if button2:
-                if user_ans.strip():
-                    eval_prompt = f"""
-                    문제: {st.session_state.current_question}
-                    답변: {user_ans}
-                    You are going to talk with the student multiple times, so as you talk with them, you must provide a feedback to the student based on their answer, or give them an another chance to answer, or provide hint, if they did not answer correctly at all or was very close. Do not follow a strict format, but rather be flexible and adaptive to the student's needs. 
-                    """
-                    feedback = ask_gpt(eval_prompt)
-                    st.markdown(feedback)
+if button2:
+    if user_ans.strip():
+        eval_prompt = f"""
+        문제: {st.session_state.current_question}
+        답변: {user_ans}
+        You are going to talk with the student multiple times, so as you talk with them, you must provide a feedback to the student based on their answer, or give them an another chance to answer, or provide hint, if they did not answer correctly at all or was very close. Do not follow a strict format, but rather be flexible and adaptive to the student's needs. 
+        """
+        feedback = ask_gpt(eval_prompt)
 
-                    # 기록 저장
-                    st.session_state.study_history.append(
-                        (st.session_state.current_question, user_ans, feedback)
-                    )
+        # 피드백을 상태에 저장해서 항상 같은 위치에 업데이트
+        st.session_state.current_feedback = feedback
+        st.session_state.study_history.append(
+            (st.session_state.current_question, user_ans, feedback)
+        )
 
-                    # 턴 수 증가 및 현재 질문 삭제 (다음 턴 준비)
-                    st.session_state.study_turn += 1
-                    del st.session_state.current_question
+        # 만약 정답이라면 다음 턴으로 넘어가도록 처리 (간단히 점수 포함 여부로 판단)
+        if "정답" in feedback or "잘했습니다" in feedback or "100" in feedback:
+            st.session_state.study_turn += 1
+            if "current_question" in st.session_state:
+                del st.session_state.current_question
+            if st.session_state.study_turn == 10:
+                st.success("🎉 10턴 학습이 완료되었습니다! GPT가 종합 피드백을 제공했습니다.")
+                st.stop()
 
-                    # 10턴이 끝나면 대화 종료 메시지 표시
-                    if st.session_state.study_turn == 10:
-                        st.success("🎉 10턴 학습이 완료되었습니다! GPT가 종합 피드백을 제공했습니다.")
-                        st.stop()
-
-        else:
-            st.info("이미 10턴 학습이 완료되었습니다. 새로운 학습을 시작하려면 페이지를 새로고침하세요.")
+# --- 피드백 출력 (매번 업데이트) ---
+if "current_feedback" in st.session_state:
+    st.markdown("#### 📊 피드백")
+    st.markdown(st.session_state.current_feedback)
 
 
 
