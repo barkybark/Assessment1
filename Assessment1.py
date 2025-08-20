@@ -75,13 +75,14 @@ def main():
 # daily_mode 유지
     if "mode" in st.session_state and st.session_state.mode == "daily":
         st.subheader("📅 오늘의 문제")
+
         # 책 내용 기반으로 GPT가 문제 생성
         if "daily_question" not in st.session_state:
             question_prompt = f"""
             In the below BOOK:, I've provided you with the Guesstimation book that you are going to use. 
             You are supposed to create a Guesstimation problem based on the book content for a student who does not have a time to read the book.
             Greet the student and create a random problem based on the book content, and just a single question.
-            Provide the question in Korean.
+            Provide the question in Korean.The problem must be randomly chosen as the user will use this service multiple times so it does not overlap with the previous studies.
             ###
             BOOK:
             {book_content}  # token 제한 있으면 앞부분 일부만 전달 [:4000]
@@ -96,9 +97,11 @@ def main():
             
             # 문제와 답변 유지 (필요하면 제거 가능)
             st.session_state.daily_answer = user_answer
-            button = st.button("제출")
 
-            if button:
+
+            button1 = st.button("제출")
+
+            if button1:
                 st.write("debug test 1")
                 
                 eval_prompt = f"""
@@ -124,9 +127,6 @@ def main():
 
                 st.markdown("#### 📊 평가 결과")
                 st.markdown(feedback)
-
-
-    
 
 
             # 이전 답변 표시
