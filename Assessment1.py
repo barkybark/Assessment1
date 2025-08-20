@@ -104,7 +104,13 @@ def main():
                 eval_prompt = f"""
                 The ANSWER below provides the user's answer to the question.
                 Please do the following:
-                1. Score the answer from 0 to 100 based on its accuracy.
+                1. Score the answer from 0 to 100 based on its accuracy. 
+                The score should be based on the following criteria:
+                    - Accuracy: How close the answer is to the correct answer.
+                    - Completeness: Whether the answer covers all aspects of the question.
+                    - Clarity: How clearly the answer is presented.
+                    - Logical Reasoning: How well the answer uses logical reasoning to arrive at the conclusion.
+                    
                 2. Provide feedback on the answer if the score is not 100, including:
                     1. What is good about the answer
                     2. Areas for improvement
