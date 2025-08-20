@@ -39,7 +39,6 @@ def ask_gpt(prompt):
     response = client.chat.completions.create(
         model="gpt-4o-mini", 
         messages=[
-            {"role": "system", "content": "You are a helpful assistant that creates and evaluates guesstimation problems for people who does not have an enough time to go through guesstimation book."},
             {"role": "system", "content": prompt}
         ],
         temperature=1.0
@@ -124,11 +123,12 @@ def main():
                 ANSWER: {user_answer}
                 """
                 st.write("debug test 2")
-                feedback = ask_gpt(eval_prompt)
+
                 st.write("debug test 3")
 
                 st.markdown("#### 📊 평가 결과")
                 st.write("debug test 4")
+                feedback = ask_gpt(eval_prompt)
                 st.markdown(feedback)
 
 
