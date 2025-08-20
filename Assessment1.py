@@ -117,6 +117,8 @@ def main():
                     2. Areas for improvement
                 3. Provide a model answer.
 
+                Please provide the feedback in Korean.
+
                 ###
                 QUESTION: {question}
                 ANSWER: {user_answer}
