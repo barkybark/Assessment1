@@ -128,6 +128,7 @@ def main():
                 st.write("debug test 3")
 
                 st.markdown("#### 📊 평가 결과")
+                st.write("debug test 4")
                 st.markdown(feedback)
 
 
