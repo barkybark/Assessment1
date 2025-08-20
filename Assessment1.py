@@ -272,10 +272,10 @@ if button2:
                 st.success("🎉 10턴 학습이 완료되었습니다! GPT가 종합 피드백을 제공했습니다.")
                 st.stop()
 
-# --- 피드백 출력 (매번 업데이트) ---
-if "current_feedback" in st.session_state:
-    st.markdown("#### 📊 피드백")
-    st.markdown(st.session_state.current_feedback)
+        # --- 피드백 출력 (매번 업데이트) ---
+        if "current_feedback" in st.session_state:
+            st.markdown("#### 📊 피드백")
+            st.markdown(st.session_state.current_feedback)
 
 
 
