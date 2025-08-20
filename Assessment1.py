@@ -123,7 +123,9 @@ def main():
                 QUESTION: {question}
                 ANSWER: {user_answer}
                 """
+                st.write("debug test 2")
                 feedback = ask_gpt(eval_prompt)
+                st.write("debug test 3")
 
                 st.markdown("#### 📊 평가 결과")
                 st.markdown(feedback)
