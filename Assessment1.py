@@ -101,7 +101,6 @@ def main():
             button1 = st.button("제출")
 
             if button1:
-                st.write("debug test 1")
                 
                 eval_prompt = f"""
                 The ANSWER below provides the user's answer to the question.
@@ -122,12 +121,10 @@ def main():
                 QUESTION: {question}
                 ANSWER: {user_answer}
                 """
-                st.write("debug test 2")
-
-                st.write("debug test 3")
+   
 
                 st.markdown("#### 📊 평가 결과")
-                st.write("debug test 4")
+                st.write("평가가 나올 때까지 잠시 기다려 주세요....")
                 feedback = ask_gpt(eval_prompt)
                 st.markdown(feedback)
 
