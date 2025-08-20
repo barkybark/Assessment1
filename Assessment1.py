@@ -84,7 +84,7 @@ def main():
             Provide the question in Korean.
             ###
             BOOK:
-            {book_content[:4000]}  # token 제한 있으면 앞부분 일부만 전달 [:4000]
+            {book_content}  # token 제한 있으면 앞부분 일부만 전달 [:4000]
             ###
             """
             
@@ -110,7 +110,7 @@ def main():
                     - Completeness: Whether the answer covers all aspects of the question.
                     - Clarity: How clearly the answer is presented.
                     - Logical Reasoning: How well the answer uses logical reasoning to arrive at the conclusion.
-                    
+
                 2. Provide feedback on the answer if the score is not 100, including:
                     1. What is good about the answer
                     2. Areas for improvement
@@ -196,7 +196,7 @@ def main():
             The explanation should be concise, within 5 sentences, and in Korean.
 
             BOOK CONTENT:
-            {book_content[:4000]}
+            {book_content}
             """
             st.session_state.study_intro = ask_gpt(intro_prompt)
 
