@@ -57,13 +57,12 @@ st.set_page_config(
 
 def main():
 
+    # 이미지 표시
     image_path = 'iconlogowhite.png'
     image = Image.open(image_path)
-    
 
 
     st.image(image , width=100)
-
     st.title("Guesstimation Trainer")
     
     
@@ -99,6 +98,8 @@ def main():
             question_prompt = f"""
             In the below BOOK:, I've provided you with the Guesstimation book that you are going to use. 
             You are supposed to create a Guesstimation problem based on the book content for a student who does not have a time to read the book.
+            Make sure that the problem is from the book content, and is suitable for a student who has just learned the key concepts of Guesstimation. 
+        
             Greet the student and create a random problem based on the book content, and just a single question.
             Provide the question in Korean. The problem must be randomly chosen as the user will use this service multiple times so it does not overlap with the previous studies.
             ###
@@ -125,10 +126,9 @@ def main():
                 The ANSWER below provides the user's answer to the question.
                 Please do the following:
 
-                Please provide a feedback or a comment to the user based on their answer for them to get better understanding of the question and Guesstimation concept.
+                Please provide a feedback or a comment to the user based on their answer for them to get better understanding of the question and to approach the problem in a better way.
                 While providing the feedback, make sure that you do not evalute them, or mention that it is correct or not, but rather provide a feedback that helps them to understand the concept better.
                 Also provide a short positive feedback to encourage them to keep going. 
-
 
                 ###
                 QUESTION: {question}
@@ -136,8 +136,8 @@ def main():
                 """
    
 
-                st.markdown("#### 📊 평가 결과")
-                st.write("평가가 나올 때까지 잠시 기다려 주세요....")
+                st.markdown("#### 📊 피드백 결과")
+                st.write("피드백이 나올 때까지 잠시 기다려 주세요....")
                 feedback = ask_gpt(eval_prompt)
                 st.markdown(feedback)
 
