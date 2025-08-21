@@ -59,13 +59,21 @@ def main():
 
     image_path = 'iconlogowhite.png'
     image = Image.open(image_path)
-    st.image(image , width=100)
-  
-    st.title("Guesstimation Trainer")
-    st.write("")
-    st.write("")
-    st.write("")
     
+
+    col1, col2, col3 = st.columns(3)
+    with col2:
+        st.image(image , width=100)
+  
+    col1, col2, col3 = st.columns(3)
+    with col2:
+        st.title("Guesstimation Trainer")
+    
+    
+    st.write("")
+    st.write("")
+    st.write("")
+
 
     st.markdown(
         """
