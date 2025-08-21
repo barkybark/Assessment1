@@ -244,7 +244,8 @@ def main():
     if "mode" in st.session_state and st.session_state.mode == "study":
         st.subheader("📚 공부 모드 시작")
 
-            # 책 불러오기 & 챕터 나누기
+        # 책 불러오기 & 챕터 나누기
+        docx_path = "guesstimation.docx"  # docx 파일 경로
         full_text = load_docx(docx_path)
         chapters = split_chapters(full_text)
 
