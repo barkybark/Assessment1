@@ -59,7 +59,7 @@ def main():
 
     image_path = 'iconlogowhite.png'
     image = Image.open(image_path)
-    st.image(image, use_column_width=True)
+    st.image(image, width=100)
 
     st.title("🎯 Guesstimation Trainer")
     st.markdown(
