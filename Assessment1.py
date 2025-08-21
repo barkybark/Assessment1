@@ -61,13 +61,10 @@ def main():
     image = Image.open(image_path)
     
 
-    col1, col2, col3 = st.columns(3)
-    with col2:
-        st.image(image , width=100)
-  
-    col1, col2, col3 = st.columns(3)
-    with col2:
-        st.title("Guesstimation Trainer")
+
+    st.image(image , width=100)
+
+    st.title("Guesstimation Trainer")
     
     
     st.write("")
