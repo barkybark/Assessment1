@@ -59,9 +59,15 @@ def main():
 
     image_path = 'iconlogowhite.png'
     image = Image.open(image_path)
-    st.image(image, width=100)
+  
+    col1, col2 = st.columns([1, 3])  # 비율 조정 가능 (왼쪽:오른쪽)
 
-    st.title("🎯 Guesstimation Trainer")
+    with col1:
+        st.image("your_image.png", width=100)
+
+    with col2:
+        st.title("Guesstimation Trainer")
+
     st.markdown(
         """
         **환영합니다!**  
