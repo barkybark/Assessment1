@@ -60,16 +60,19 @@ def main():
         """
         **환영합니다!**  
         이 앱은 게스티메이션 책을 기준으로 공부를 하기 위한 AI 기반 학습 도구입니다.  
+
+
         아래에서 모드를 선택하세요.
         """
     )
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("📅 데일리 액세사이즈", use_container_width=True):
-            st.session_state.mode = "daily"
-    with col2:
         if st.button("📚 공부 모드", use_container_width=True):
             st.session_state.mode = "study"
+        
+    with col2:
+        if st.button("📅 데일리 액세사이즈", use_container_width=True):
+            st.session_state.mode = "daily"
 
 # daily_mode 유지
     if "mode" in st.session_state and st.session_state.mode == "daily":
