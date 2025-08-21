@@ -5,6 +5,7 @@ from docx import Document
 import random
 import textwrap
 from openai import OpenAI
+from PIL import Image
 
 # General Setting
 st.set_page_config(page_title="Guesstimation Trainer", layout="centered")
@@ -55,6 +56,11 @@ st.set_page_config(
 )
 
 def main():
+
+    image_path = 'iconlogowhite.png'
+    image = Image.open(image_path)
+    st.image(image, use_column_width=True)
+
     st.title("🎯 Guesstimation Trainer")
     st.markdown(
         """
@@ -84,7 +90,7 @@ def main():
             In the below BOOK:, I've provided you with the Guesstimation book that you are going to use. 
             You are supposed to create a Guesstimation problem based on the book content for a student who does not have a time to read the book.
             Greet the student and create a random problem based on the book content, and just a single question.
-            Provide the question in Korean.The problem must be randomly chosen as the user will use this service multiple times so it does not overlap with the previous studies.
+            Provide the question in Korean. The problem must be randomly chosen as the user will use this service multiple times so it does not overlap with the previous studies.
             ###
             BOOK:
             {book_content}  # token 제한 있으면 앞부분 일부만 전달 [:4000]
@@ -108,19 +114,11 @@ def main():
                 eval_prompt = f"""
                 The ANSWER below provides the user's answer to the question.
                 Please do the following:
-                1. Score the answer from 0 to 100 based on its accuracy. 
-                The score should be based on the following criteria:
-                    - Accuracy: How close the answer is to the correct answer.
-                    - Completeness: Whether the answer covers all aspects of the question.
-                    - Clarity: How clearly the answer is presented.
-                    - Logical Reasoning: How well the answer uses logical reasoning to arrive at the conclusion.
 
-                2. Provide feedback on the answer if the score is not 100, including:
-                    1. What is good about the answer
-                    2. Areas for improvement
-                3. Provide a model answer.
+                Please provide a feedback or a comment to the user based on their answer for them to get better understanding of the question and Guesstimation concept.
+                While providing the feedback, make sure that you do not evalute them, or mention that it is correct or not, but rather provide a feedback that helps them to understand the concept better.
+                Also provide a short positive feedback to encourage them to keep going. 
 
-                Please provide the feedback in Korean.
 
                 ###
                 QUESTION: {question}
