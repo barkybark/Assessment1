@@ -241,8 +241,10 @@ def main():
     #             feedback = ask_gpt(eval_prompt)
     #             st.markdown(feedback)
 
-
     if "mode" in st.session_state and st.session_state.mode == "study":
+        st.session_state.mode2 = "studystart"
+
+    if "mode2" in st.session_state and st.session_state.mode2 == "studystart":
         
         st.subheader("📚 공부 모드 시작")
 
