@@ -250,6 +250,9 @@ def main():
     if "mode2" in st.session_state and st.session_state.mode2 == "studystart":
         
         st.subheader("📚 공부 모드 시작")
+        st.write("")
+        st.write("사이드 바에서 각 챕터를 선택하고, 해당되는  챕터를 학습해 보세요.")
+        st.write("")
 
         # 책 불러오기 & 챕터 나누기
         docx_path = "guesstimation.docx"  # docx 파일 경로
