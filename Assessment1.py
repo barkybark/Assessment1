@@ -6,6 +6,7 @@ import random
 import textwrap
 from openai import OpenAI
 from PIL import Image
+from docx import Document
 
 # General Setting
 st.set_page_config(page_title="Guesstimation Trainer", layout="centered")
@@ -46,6 +47,46 @@ def ask_gpt(prompt):
     )
     return response.choices[0].message.content
 
+# 챕터로 나누기
+def split_chapters(full_text):
+    chapters = {}
+    current_chapter = None
+    buffer = []
+
+    for line in full_text.split("\n"):
+        if line.startswith("Chapter"):
+            if current_chapter:
+                chapters[current_chapter] = buffer
+            current_chapter = line.strip()
+            buffer = []
+        else:
+            buffer.append(line.strip())
+    if current_chapter:
+        chapters[current_chapter] = buffer
+    return chapters
+
+
+def summarize_with_gpt(chapter_title, chapter_text, step):
+    prompt = f"""
+    You are a professional tutor helping a student study "Guesstimation".
+    The BOOK CHAPTER below is from a Guesstimation book.
+    
+    Please display this chapter step by step, in Korean.
+    For each step, do the following:
+    1. Summarize the key concepts in easy-to-understand Korean.
+    2. Comments (Why is it important? How can it be applied?)
+    3. If there is a problem (example), present the problem + model answer + explanation.
+    
+    Output should be structured and easy to follow. It should be in Korean.
+    The student is currently viewing the {step}th part of this chapter.
+
+
+    CHAPTER TITLE: {chapter_title}
+    BOOK CHAPTER CONTENT:
+    {chapter_text}
+    """
+    return ask_gpt(prompt)  # ✅ 기존 코드의 ask_gpt 함수 활용
+
 # ======== 메인 UI ========
 
 # 페이지 기본 설정
@@ -80,6 +121,8 @@ def main():
         아래에서 모드를 선택하세요.
         """
     )
+    st.write("")
+    st.write("")
     col1, col2 = st.columns(2)
     with col1:
         if st.button("📚 공부 모드", use_container_width=True):
@@ -88,6 +131,9 @@ def main():
     with col2:
         if st.button("📅 데일리 액세사이즈", use_container_width=True):
             st.session_state.mode = "daily"
+
+    st.write("")
+    st.write("")
 
 # daily_mode 유지
     if "mode" in st.session_state and st.session_state.mode == "daily":
@@ -194,99 +240,55 @@ def main():
     #             feedback = ask_gpt(eval_prompt)
     #             st.markdown(feedback)
 
+
     if "mode" in st.session_state and st.session_state.mode == "study":
         st.subheader("📚 공부 모드 시작")
 
-        # 1️⃣ 대화 상태 초기화
-        if "study_turn" not in st.session_state:
-            st.session_state.study_turn = 0
-            st.session_state.study_history = []  # (질문, 답변, 피드백) 기록
+            # 책 불러오기 & 챕터 나누기
+        full_text = load_docx(docx_path)
+        chapters = split_chapters(full_text)
 
-            # 개념 설명 생성
-            intro_prompt = f"""
-            The 'BOOK CONTENT' below is a Guesstimation book that you are going to use.
-            You are supposed to create a brief explanation of the key concepts of Guesstimation for beginners.
-            The explanation should be concise, within 5 sentences, and in Korean.
+        # 세션 상태 초기화
+        if "chapter" not in st.session_state:
+            st.session_state.chapter = list(chapters.keys())[0]
+        if "step" not in st.session_state:
+            st.session_state.step = 1
+        if "chapter_summary" not in st.session_state:
+            st.session_state.chapter_summary = ""
 
-            BOOK CONTENT:
-            {book_content}
-            """
-            st.session_state.study_intro = ask_gpt(intro_prompt)
+        # 사이드바에서 챕터 선택
+        selected_chapter = st.sidebar.radio("Chapters", list(chapters.keys()))
+        if selected_chapter != st.session_state.chapter:
+            st.session_state.chapter = selected_chapter
+            st.session_state.step = 1
+            st.session_state.chapter_summary = ""
 
-        # 2️⃣ 개념 설명 출력 (첫 턴에만)
-        if st.session_state.study_turn == 0:
-            st.markdown(f"**개념 설명:**\n{st.session_state.study_intro}")
-            st.markdown("---")
+        # 현재 챕터 내용
+        current_chapter = st.session_state.chapter
+        chapter_text = chapters[current_chapter]
 
-        # 3️⃣ 이전 대화 기록 출력
-        if st.session_state.study_history:
-            for idx, (q, a, fb) in enumerate(st.session_state.study_history, 1):
-                st.markdown(f"**Turn {idx}:** {q}")
-                st.markdown(f"**My answer:** {a}")
-                st.markdown(f"**Feedback:** {fb}")
-                st.markdown("---")
+        # GPT로 해당 step 출력
+        if st.session_state.chapter_summary == "":
+            st.session_state.chapter_summary = summarize_with_gpt(
+                current_chapter, chapter_text, st.session_state.step
+            )
 
-        # 4️⃣ 현재 턴 처리 (10턴 이하)
-        if st.session_state.study_turn < 10:
-            if "current_question" not in st.session_state:
-                # 새로운 문제 생성
-                turn = st.session_state.study_turn + 1
-                q_prompt = f"""
-        
-        The BOOK CONTENT below is a Guesstimation book that you are going to use.
-            As a professional teacher, are supposed to create a Guesstimation problem based on the book content for a student who does not have a time to read the book.
+        st.markdown(f"### {current_chapter}")
+        st.write(st.session_state.chapter_summary)
 
-            You should create a problem that is suitable for a student who has just learned the key concepts of Guesstimation.
-            Please create a Guesstimation problem based on the book content randomly, considering that the student will use this service multiple times so it does not overlap with the previous studies.
+        # Next 버튼 → 다음 step 요청
+        if st.button("Next ➡️"):
+            st.session_state.step += 1
+            st.session_state.chapter_summary = summarize_with_gpt(
+                current_chapter, chapter_text, st.session_state.step
+            )
 
-            The question must be in Korean and should be of medium difficulty.
-            Question should not overlap with previous questions.
-
-            You are going to talk with the student multiple times, so as you talk with them, you must provide a feedback to the student based on their answer, or give them an another chance to answer, or provide hint, if they did not answer correctly at all or was very close. Do not follow a strict format, but rather be flexible and adaptive to the student's needs. 
-            Try not to move on to the next question until the student has answered the current question correctly or has been given a chance to answer again when it is not correct. When they ask a question, give them a hint rather than giving them the answer directly or moving on to the next question.
-            If the student tries to abuse the system such as asking for random stuff that is out of the context, you should politely refuse and remind them that this is a Guesstimation training tool. Do not let them know that you are an AI, but rather act as a professional teacher who is here to help them learn Guesstimation, and do not provide any information about yourself or the system.
-
-            This is {st.session_state.study_turn+1}th conversation with the student. If this is 10th conversation, you should provide a final feedback and summary of the student's performance and end the conversation.
-        
-            Please print everything in KOrean.
-            BOOK CONTENT:
-            {book_content}
-                """
-                st.session_state.current_question = ask_gpt(q_prompt)
-
-            st.markdown(f"**문제 {st.session_state.study_turn + 1}:** {st.session_state.current_question}")
-
-            user_ans = st.text_input("✏️ 답변 입력", key=f"answer_{st.session_state.study_turn}")
-            button2 = st.button("제출", key=f"submit_{st.session_state.study_turn}")
-
-            if button2:
-                if user_ans.strip():
-                    eval_prompt = f"""
-                    문제: {st.session_state.current_question}
-                    답변: {user_ans}
-                    You are going to talk with the student multiple times, so as you talk with them, you must provide a feedback to the student based on their answer, or give them an another chance to answer, or provide hint, if they did not answer correctly at all or was very close. Do not follow a strict format, but rather be flexible and adaptive to the student's needs. 
-                    """
-                    feedback = ask_gpt(eval_prompt)
-
-                    # 피드백을 상태에 저장해서 항상 같은 위치에 업데이트
-                    st.session_state.current_feedback = feedback
-                    st.session_state.study_history.append(
-                        (st.session_state.current_question, user_ans, feedback)
-                    )
-
-                # 만약 정답이라면 다음 턴으로 넘어가도록 처리 (간단히 점수 포함 여부로 판단)
-                if "정답" in feedback or "잘했습니다" in feedback or "100" in feedback:
-                    st.session_state.study_turn += 1
-                    if "current_question" in st.session_state:
-                        del st.session_state.current_question
-                    if st.session_state.study_turn == 10:
-                        st.success("🎉 10턴 학습이 완료되었습니다! GPT가 종합 피드백을 제공했습니다.")
-                        st.stop()
-
-        # --- 피드백 출력 (매번 업데이트) ---
-        if "current_feedback" in st.session_state:
-            st.markdown("#### 📊 피드백")
-            st.markdown(st.session_state.current_feedback)
+        # Reset 버튼 → 챕터 처음으로
+        if st.button("🔄 Restart Chapter"):
+            st.session_state.step = 1
+            st.session_state.chapter_summary = summarize_with_gpt(
+                current_chapter, chapter_text, st.session_state.step
+            )   
 
 
 
