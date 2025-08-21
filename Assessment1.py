@@ -284,22 +284,22 @@ def main():
         st.markdown(f"### {current_chapter}")
         st.write(st.session_state.chapter_summary)
 
-        # Next 버튼 → 다음 step 요청
-        if st.button("Next ➡️"):
+        # # Next 버튼 → 다음 step 요청
+        # if st.button("Next ➡️"):
 
-            st.session_state.step += 1
-            st.session_state.chapter_select = chapter_names[st.session_state.chapter_index]
-            st.session_state.chapter_summary = summarize_with_gpt(
-                current_chapter, chapter_text, st.session_state.step
-            )
+        #     st.session_state.step += 1
+        #     st.session_state.chapter_select = chapter_names[st.session_state.chapter_index]
+        #     st.session_state.chapter_summary = summarize_with_gpt(
+        #         current_chapter, chapter_text, st.session_state.step
+        #     )
 
-        # Reset 버튼 → 챕터 처음으로
-        if st.button("🔄 Restart Chapter"):
+        # # Reset 버튼 → 챕터 처음으로
+        # if st.button("🔄 Restart Chapter"):
             
-            st.session_state.step = 1
-            st.session_state.chapter_summary = summarize_with_gpt(
-                current_chapter, chapter_text, st.session_state.step
-            )   
+        #     st.session_state.step = 1
+        #     st.session_state.chapter_summary = summarize_with_gpt(
+        #         current_chapter, chapter_text, st.session_state.step
+        #     )   
 
 
 
