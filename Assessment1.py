@@ -123,6 +123,7 @@ def main():
     )
     st.write("")
     st.write("")
+    st.session_state.mode = "None" # 초기 모드 
     col1, col2 = st.columns(2)
     with col1:
         if st.button("📚 공부 모드", use_container_width=True):
@@ -242,6 +243,7 @@ def main():
 
 
     if "mode" in st.session_state and st.session_state.mode == "study":
+        
         st.subheader("📚 공부 모드 시작")
 
         # 책 불러오기 & 챕터 나누기
