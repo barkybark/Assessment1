@@ -283,6 +283,7 @@ def main():
 
         # Next 버튼 → 다음 step 요청
         if st.button("Next ➡️"):
+            st.write("다음 챕터로 넘어가는 중...")
             st.session_state.step += 1
             st.session_state.chapter_summary = summarize_with_gpt(
                 current_chapter, chapter_text, st.session_state.step
@@ -290,6 +291,7 @@ def main():
 
         # Reset 버튼 → 챕터 처음으로
         if st.button("🔄 Restart Chapter"):
+            st.write("챕터를 처음부터 다시 시작합니다...")
             st.session_state.step = 1
             st.session_state.chapter_summary = summarize_with_gpt(
                 current_chapter, chapter_text, st.session_state.step
