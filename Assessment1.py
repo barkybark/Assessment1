@@ -112,6 +112,15 @@ def reset_daily():
 
 def main():
 
+    if "daily_question" not in st.session_state:
+    st.session_state.daily_question = None
+    if "daily_question_prompt" not in st.session_state:
+        st.session_state.daily_question_prompt = None
+    if "daily_feedback" not in st.session_state:
+        st.session_state.daily_feedback = None
+    if "mode" not in st.session_state:
+    st.session_state.mode = None
+
     # 이미지 표시
     image_path = 'iconlogowhite.png'
     image = Image.open(image_path)
@@ -138,8 +147,7 @@ def main():
     st.write("")
     st.write("")
 
-    if "mode" not in st.session_state:
-        st.session_state.mode = None
+    
    
     
 
