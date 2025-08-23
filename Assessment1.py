@@ -113,13 +113,13 @@ def reset_daily():
 def main():
 
     if "daily_question" not in st.session_state:
-    st.session_state.daily_question = None
+        st.session_state.daily_question = None
     if "daily_question_prompt" not in st.session_state:
         st.session_state.daily_question_prompt = None
     if "daily_feedback" not in st.session_state:
         st.session_state.daily_feedback = None
     if "mode" not in st.session_state:
-    st.session_state.mode = None
+        st.session_state.mode = None
 
     # 이미지 표시
     image_path = 'iconlogowhite.png'
