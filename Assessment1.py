@@ -224,7 +224,7 @@ def main():
                 Make sure the feedback is in Korean.. 
 
                 ###
-                QUESTION: {question}
+                QUESTION: {st.session_state.daily_question}
                 ANSWER: {user_answer}
             """
             
