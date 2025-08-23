@@ -258,9 +258,7 @@ def main():
     #             st.markdown(feedback)
 
     if st.session_state.mode == "study":
-        st.session_state.mode2 = "studystart"
 
-    if st.session_state.mode2 == "studystart":
         
         st.subheader("📚 공부 모드 시작")
         st.write("")
