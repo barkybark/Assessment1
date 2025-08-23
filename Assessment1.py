@@ -130,6 +130,16 @@ def main():
     st.write("")
     st.session_state.mode = None # 초기 모드 
 
+    
+def reset_study():
+    st.session_state.study_index = 0
+    st.session_state.mode = "study"
+
+def reset_daily():
+    st.session_state.daily_question = None
+    st.session_state.daily_answer = None
+    st.session_state.mode = "daily"
+
     col1, col2 = st.columns(2)
     with col1:
         st.markdown("### 공부모드")
@@ -143,13 +153,11 @@ def main():
     col1, col2 = st.columns(2)
     with col1:
         if st.button("📚 공부 모드", use_container_width=True):
-            st.session_state.mode = "study"
+            reset_study()
         
     with col2:
         if st.button("📅 데일리 액세사이즈", use_container_width=True):
-            st.write("debug: 버튼 눌림")
-            st.session_state.mode = "daily"
-            st.write("debug: 버튼 눌림")
+            reset_daily()
 
     st.write("")
     st.write("")
