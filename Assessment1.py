@@ -128,7 +128,7 @@ def main():
     )
     st.write("")
     st.write("")
-    st.session_state.mode = "None" # 초기 모드 
+    st.session_state.mode = None # 초기 모드 
 
     col1, col2 = st.columns(2)
     with col1:
@@ -153,7 +153,7 @@ def main():
     st.write("")
 
 # daily_mode 유지
-    if "mode" in st.session_state and st.session_state.mode == "daily":
+    if st.session_state.mode == "daily":
         st.subheader("📅 오늘의 문제")
 
         # 책 내용 기반으로 GPT가 문제 생성
@@ -257,10 +257,10 @@ def main():
     #             feedback = ask_gpt(eval_prompt)
     #             st.markdown(feedback)
 
-    if "mode" in st.session_state and st.session_state.mode == "study":
+    if st.session_state.mode == "study":
         st.session_state.mode2 = "studystart"
 
-    if "mode2" in st.session_state and st.session_state.mode2 == "studystart":
+    if st.session_state.mode2 == "studystart":
         
         st.subheader("📚 공부 모드 시작")
         st.write("")
@@ -309,8 +309,9 @@ def main():
         #         current_chapter, chapter_text, st.session_state.step
         #     )
 
-        # # Reset 버튼 → 챕터 처음으로
-        # if st.button("🔄 Restart Chapter"):
+      
+        if st.button("나가기"):
+            st.session_state.mode = None
             
         #     st.session_state.step = 1
         #     st.session_state.chapter_summary = summarize_with_gpt(
