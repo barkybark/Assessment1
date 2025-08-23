@@ -194,10 +194,11 @@ def main():
 
             ###
             """
-            st.session_state.daily_question = ask_gpt(question)
+            st.session_state.daily_question_prompt = question_prompt
+            st.session_state.daily_question = ask_gpt(question_prompt)
 
-            # 항상 문제 출력
-            st.markdown(f"**문제:** {st.session_state.daily_question}")
+        # 항상 문제 출력
+        st.markdown(f"**문제:** {st.session_state.daily_question}")
 
         # 답변 입력
         if "daily_answer" not in st.session_state:
@@ -245,6 +246,7 @@ def main():
         # 리셋 버튼 (다시 새로운 문제 받고 싶을 때)
         if st.button("🔄 새 문제 받기", key="reset_daily"):
             del st.session_state.daily_question
+            del st.session_state.daily_question_prompt
             if "daily_feedback" in st.session_state:
                 del st.session_state.daily_feedback
             st.session_state.daily_answer = ""
