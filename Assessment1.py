@@ -223,8 +223,8 @@ In the below BOOK:, I've provided you with the Guesstimation book that you are g
             st.session_state.daily_feedback = ask_gpt(eval_prompt)
 
 
-        st.markdown("#### 📊 피드백 결과")
-        st.markdown(st.session_state.daily_feedback)
+            st.markdown("#### 📊 피드백 결과")
+            st.markdown(st.session_state.daily_feedback)
 
         # 리셋 버튼 (다시 새로운 문제 받고 싶을 때)
         if st.button("🔄 새 문제 받기", key="reset_daily"):
