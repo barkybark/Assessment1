@@ -153,11 +153,11 @@ def main():
     st.write("")
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("📚 공부 모드", use_container_width=True):
+        if st.button("📚 공부 모드", key="study", use_container_width=True):
             reset_study()
         
     with col2:
-        if st.button("📅 데일리 액세사이즈", use_container_width=True):
+        if st.button("📅 데일리 액세사이즈", key="daily", use_container_width=True):
             reset_daily()
 
     st.write("")
@@ -333,7 +333,7 @@ In the below BOOK:, I've provided you with the Guesstimation book that you are g
         #     )
 
       
-        if st.button("나가기"):
+        if st.button("나가기", key="exit"):
             st.session_state.mode = None
             
         #     st.session_state.step = 1
