@@ -7,6 +7,7 @@ import textwrap
 from openai import OpenAI
 from PIL import Image
 from docx import Document
+import time
 
 # General Setting
 st.set_page_config(page_title="Guesstimation Trainer", layout="centered")
