@@ -158,36 +158,49 @@ def main():
     if st.session_state.mode == "daily":
         st.subheader("📅 오늘의 문제")
 
-        # 책 내용 기반으로 GPT가 문제 생성
+        # 문제를 session_state에 저장 (처음 한 번만)
         if "daily_question" not in st.session_state:
             question_prompt = f"""
-            In the below BOOK:, I've provided you with the Guesstimation book that you are going to use. 
+ In the below BOOK:, I've provided you with the Guesstimation book that you are going to use. 
+
             You are supposed to create a Guesstimation problem based on the book content for a student who does not have a time to read the book.
+
             Make sure that the problem is from the book content, and is suitable for a student who has just learned the key concepts of Guesstimation. 
+
         
+
             Greet the student and create a random problem based on the book content, and just a single question.
+
             Provide the question in Korean. The problem must be randomly chosen as the user will use this service multiple times so it does not overlap with the previous studies.
+
             ###
+
             BOOK:
+
             {book_content}  # token 제한 있으면 앞부분 일부만 전달 [:4000]
+
             ###
             """
-            
-            question = ask_gpt(question_prompt)
+            st.session_state.daily_question = ask_gpt(question_prompt)
 
-            st.markdown(f"{question}")
+        # 항상 문제 출력
+        st.markdown(f"**문제:** {st.session_state.daily_question}")
 
-            user_answer = st.text_area("✏️ 당신의 답변을 입력하세요", height=150)
-            
-            # 문제와 답변 유지 (필요하면 제거 가능)
-            st.session_state.daily_answer = user_answer
+        # 답변 입력
+        if "daily_answer" not in st.session_state:
+            st.session_state.daily_answer = ""
 
-            if st.button("제출") and st.session_state.mode=="daily":
-                st.write(st.session_state.mode)
-                st.write("제출버튼클릭완료")
-                
-                eval_prompt = f"""
-                The ANSWER below provides the user's answer to the question.
+        user_answer = st.text_area("✏️ 당신의 답변을 입력하세요", 
+                                value=st.session_state.daily_answer, 
+                                height=150)
+
+        # 입력값을 세션에 저장
+        st.session_state.daily_answer = user_answer
+
+        # 제출 버튼
+        if st.button("제출", key="daily_submit"):
+            eval_prompt = f"""
+           The ANSWER below provides the user's answer to the question.
                 Please do the following:
 
                 Please provide a feedback or a comment to the user based on their answer for them to get better understanding of the question and to approach the problem in a better way.
@@ -197,19 +210,21 @@ def main():
                 ###
                 QUESTION: {question}
                 ANSWER: {user_answer}
-                """
-   
+            """
+            st.session_state.daily_feedback = ask_gpt(eval_prompt)
 
-                st.markdown("#### 📊 피드백 결과")
-                st.write("피드백이 나올 때까지 잠시 기다려 주세요....")
-                feedback = ask_gpt(eval_prompt)
-                st.markdown(feedback)
+        # 피드백 출력 (버튼 누른 후에도 유지됨)
+        if "daily_feedback" in st.session_state:
+            st.markdown("#### 📊 피드백 결과")
+            st.markdown(st.session_state.daily_feedback)
 
-
-            # 이전 답변 표시
-            if "daily_answer" in st.session_state:
-                st.markdown(f"**이전 답변:** {st.session_state.daily_answer}")
-
+        # 리셋 버튼 (다시 새로운 문제 받고 싶을 때)
+        if st.button("🔄 새 문제 받기", key="reset_daily"):
+            del st.session_state.daily_question
+            if "daily_feedback" in st.session_state:
+                del st.session_state.daily_feedback
+            st.session_state.daily_answer = ""
+            st.rerun()
     # -------------------------------
     # 7. 공부 모드
     # -------------------------------
