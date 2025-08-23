@@ -180,7 +180,7 @@ def main():
 
         # 문제를 session_state에 저장 (처음 한 번만)
  
-        if "daily_question" not in st.session_state:
+        if st.session_state.daily_question is None
             question_prompt = f""" 
     In the below BOOK:, I've provided you with the Guesstimation book that you are going to use. 
 
