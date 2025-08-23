@@ -136,8 +136,10 @@ def main():
     )
     st.write("")
     st.write("")
-    st.session_state.mode = None # 초기 모드 
 
+    if "mode" not in st.session_state:
+        st.session_state.mode = None
+   
     
 
 
