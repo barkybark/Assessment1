@@ -147,7 +147,9 @@ def main():
         
     with col2:
         if st.button("📅 데일리 액세사이즈", use_container_width=True):
+            st.write("debug: 버튼 눌림")
             st.session_state.mode = "daily"
+            st.write("debug: 버튼 눌림")
 
     st.write("")
     st.write("")
