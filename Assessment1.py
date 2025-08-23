@@ -183,9 +183,10 @@ def main():
             st.session_state.daily_answer = user_answer
 
 
-            button1 = st.button("제출")
 
-            if button1:
+            if st.button("제출"):
+                st.write(st.session_state.mode)
+                st.write("제출버튼클릭완료")
                 
                 eval_prompt = f"""
                 The ANSWER below provides the user's answer to the question.
