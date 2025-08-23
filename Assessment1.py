@@ -217,13 +217,24 @@ In the below BOOK:, I've provided you with the Guesstimation book that you are g
 
                 Please provide a feedback or a comment to the user based on their answer for them to get better understanding of the question and to approach the problem in a better way.
                 While providing the feedback, make sure that you do not evalute them, or mention that it is correct or not, but rather provide a feedback that helps them to understand the concept better.
-                Also provide a short positive feedback to encourage them to keep going. 
+                Also provide a short positive feedback to encourage them to keep going.
+                Make sure the feedback is in Korean.. 
 
                 ###
                 QUESTION: {question}
                 ANSWER: {user_answer}
             """
+            
             st.session_state.daily_feedback = ask_gpt(eval_prompt)
+            
+            # Create a placeholder
+            placeholder = st.empty()
+
+            # Show a temporary message
+            placeholder.write("⏳ 잠시만 기다려 주세요...")
+
+            # Simulate some work (e.g., GPT call)
+            time.sleep(3)
 
 
             st.markdown("#### 📊 피드백 결과")
