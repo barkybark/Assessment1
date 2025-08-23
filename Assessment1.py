@@ -79,6 +79,8 @@ def summarize_with_gpt(chapter_title, chapter_text, step):
     3. If there is a problem (example), present the problem + model answer + explanation.
     
     Output should be structured and easy to follow. It should be in Korean.
+    Make it like a summary that helps the student grasp the key points quickly, but be detailed in necessary parts..
+    Make sure it is easy to read and understand - it should be readable in terms of formatting.
     The student is currently viewing the {step}th part of this chapter.
     If it is 1st part, provide a Chatper 1 summary.
     If it is 2nd part, provide a Chatper 2 summary, and so on.
@@ -127,6 +129,17 @@ def main():
     st.write("")
     st.write("")
     st.session_state.mode = "None" # 초기 모드 
+
+    col1, col2 = st.columns(2)
+    with col1:
+        st.markdown("### 공부모드")
+        st.write("책의 챕터를 선택하여 해당 내용의 요점과 설명을 들으며 공부합니다.")
+        
+    with col2:
+        st.markdown("### 데일리 액서사이즈")
+        st.write("GPT가 랜덤으로 내 주는 문제를 풀고 피드백을 받아봅니다.")
+        
+    st.write("")
     col1, col2 = st.columns(2)
     with col1:
         if st.button("📚 공부 모드", use_container_width=True):
