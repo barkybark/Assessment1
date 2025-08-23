@@ -192,7 +192,7 @@ In the below BOOK:, I've provided you with the Guesstimation book that you are g
 
         ###
         """
-        st.session_state.daily_question = ask_gpt(question_prompt)
+        st.session_state.daily_question = ask_gpt(question)
 
         # 항상 문제 출력
         st.markdown(f"**문제:** {st.session_state.daily_question}")
