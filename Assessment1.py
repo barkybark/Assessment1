@@ -171,7 +171,7 @@ def main():
 
         # 문제를 session_state에 저장 (처음 한 번만)
  
-        question_prompt = f"""
+        question = f"""
 In the below BOOK:, I've provided you with the Guesstimation book that you are going to use. 
 
         You are supposed to create a Guesstimation problem based on the book content for a student who does not have a time to read the book.
@@ -206,6 +206,7 @@ In the below BOOK:, I've provided you with the Guesstimation book that you are g
                                 height=150)
 
         # 입력값을 세션에 저장
+
         st.session_state.daily_answer = user_answer
 
         # 제출 버튼
