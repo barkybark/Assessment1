@@ -172,31 +172,32 @@ def main():
 
         # 문제를 session_state에 저장 (처음 한 번만)
  
-        question = f"""
-In the below BOOK:, I've provided you with the Guesstimation book that you are going to use. 
+        if "daily_question" not in st.session_state:
+            question = f"""
+    In the below BOOK:, I've provided you with the Guesstimation book that you are going to use. 
 
-        You are supposed to create a Guesstimation problem based on the book content for a student who does not have a time to read the book.
+            You are supposed to create a Guesstimation problem based on the book content for a student who does not have a time to read the book.
 
-        Make sure that the problem is from the book content, and is suitable for a student who has just learned the key concepts of Guesstimation. 
+            Make sure that the problem is from the book content, and is suitable for a student who has just learned the key concepts of Guesstimation. 
 
-    
+        
 
-        Greet the student and create a random problem based on the book content, and just a single question.
+            Greet the student and create a random problem based on the book content, and just a single question.
 
-        Provide the question in Korean. The problem must be randomly chosen as the user will use this service multiple times so it does not overlap with the previous studies.
+            Provide the question in Korean. The problem must be randomly chosen as the user will use this service multiple times so it does not overlap with the previous studies.
 
-        ###
+            ###
 
-        BOOK:
+            BOOK:
 
-        {book_content}  # token 제한 있으면 앞부분 일부만 전달 [:4000]
+            {book_content}  # token 제한 있으면 앞부분 일부만 전달 [:4000]
 
-        ###
-        """
-        st.session_state.daily_question = ask_gpt(question)
+            ###
+            """
+            st.session_state.daily_question = ask_gpt(question)
 
-        # 항상 문제 출력
-        st.markdown(f"**문제:** {st.session_state.daily_question}")
+            # 항상 문제 출력
+            st.markdown(f"**문제:** {st.session_state.daily_question}")
 
         # 답변 입력
         if "daily_answer" not in st.session_state:
