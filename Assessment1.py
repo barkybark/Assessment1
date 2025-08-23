@@ -100,6 +100,14 @@ st.set_page_config(
     page_icon="🎯",
     layout="centered"
 )
+def reset_study():
+    st.session_state.study_index = 0
+    st.session_state.mode = "study"
+
+def reset_daily():
+    st.session_state.daily_question = None
+    st.session_state.daily_answer = None
+    st.session_state.mode = "daily"
 
 def main():
 
@@ -131,14 +139,7 @@ def main():
     st.session_state.mode = None # 초기 모드 
 
     
-def reset_study():
-    st.session_state.study_index = 0
-    st.session_state.mode = "study"
 
-def reset_daily():
-    st.session_state.daily_question = None
-    st.session_state.daily_answer = None
-    st.session_state.mode = "daily"
 
     col1, col2 = st.columns(2)
     with col1:
