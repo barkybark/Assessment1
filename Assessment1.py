@@ -85,6 +85,8 @@ def summarize_with_gpt(chapter_title, chapter_text, step):
     The student is currently viewing the {step}th part of this chapter.
     If it is 1st part, provide a Chatper 1 summary.
     If it is 2nd part, provide a Chatper 2 summary, and so on.
+    Don't miss a single concept and summzarize everything in the chapter.
+    At the end, provide a brief conclusion and key takeaways for each chapter.
 
 
     CHAPTER TITLE: {chapter_title}
