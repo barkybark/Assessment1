@@ -308,15 +308,12 @@ def main():
     #             st.markdown(feedback)
 
     if st.session_state.mode == "study":
-
-        
         st.subheader("📚 공부 모드 시작")
-        st.write("")
-        st.write("사이드 바에서 원하는 챕터를 선택하고, 해당되는  챕터를 학습해 보세요.")
+        st.write("사이드 바에서 원하는 챕터를 선택하고, 해당되는 챕터를 학습해 보세요.")
         st.write("")
 
         # 책 불러오기 & 챕터 나누기
-        docx_path = "guesstimation.docx"  # docx 파일 경로
+        docx_path = "guesstimation.docx"
         full_text = load_docx(docx_path)
         chapters = split_chapters(full_text)
 
@@ -327,6 +324,10 @@ def main():
             st.session_state.step = 1
         if "chapter_summary" not in st.session_state:
             st.session_state.chapter_summary = ""
+        if "study_pages" not in st.session_state:
+            st.session_state.study_pages = []
+        if "study_page" not in st.session_state:
+            st.session_state.study_page = 0
 
         # 사이드바에서 챕터 선택
         selected_chapter = st.sidebar.radio("Chapters", list(chapters.keys()))
@@ -334,33 +335,43 @@ def main():
             st.session_state.chapter = selected_chapter
             st.session_state.step = 1
             st.session_state.chapter_summary = ""
+            st.session_state.study_pages = []
+            st.session_state.study_page = 0
 
         # 현재 챕터 내용
         current_chapter = st.session_state.chapter
         chapter_text = chapters[current_chapter]
 
-        # GPT로 해당 step 출력
+        # GPT 요약 호출 (처음 한 번만)
         if st.session_state.chapter_summary == "":
-            st.session_state.chapter_summary = summarize_with_gpt(
+            raw_summary = summarize_with_gpt(
                 current_chapter, chapter_text, st.session_state.step
             )
+            # 청크 단위로 분할 (두 줄 공백 기준 or 원하는 기준)
+            st.session_state.study_pages = raw_summary.split("\n\n")
+            st.session_state.chapter_summary = raw_summary
 
+        # 현재 페이지 표시
         st.markdown(f"### {current_chapter}")
-        st.write(st.session_state.chapter_summary)
+        current_page = st.session_state.study_page
+        total_pages = len(st.session_state.study_pages)
+        st.write(st.session_state.study_pages[current_page])
 
-        # # Next 버튼 → 다음 step 요청
-        # if st.button("Next ➡️"):
+        # 페이지 네비게이션 버튼
+        col1, col2, col3 = st.columns([1,2,1])
+        with col1:
+            if st.button("⬅️ 이전", disabled=current_page == 0):
+                st.session_state.study_page -= 1
+                st.rerun()
+        with col3:
+            if st.button("다음 ➡️", disabled=current_page >= total_pages-1):
+                st.session_state.study_page += 1
+                st.rerun()
 
-        #     st.session_state.step += 1
-        #     st.session_state.chapter_select = chapter_names[st.session_state.chapter_index]
-        #     st.session_state.chapter_summary = summarize_with_gpt(
-        #         current_chapter, chapter_text, st.session_state.step
-        #     )
-
-      
+        # 나가기 버튼
         if st.button("나가기", key="exit"):
             st.session_state.mode = None
-            
+
         #     st.session_state.step = 1
         #     st.session_state.chapter_summary = summarize_with_gpt(
         #         current_chapter, chapter_text, st.session_state.step
