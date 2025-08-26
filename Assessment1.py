@@ -87,6 +87,7 @@ def summarize_with_gpt(chapter_title, chapter_text, step):
     If it is 2nd part, provide a Chatper 2 summary, and so on.
     Don't miss a single concept and summzarize everything in the chapter.
     At the end, provide a brief conclusion and key takeaways for each chapter.
+    Do not use more than two enter spaces between paragraphs, because the output will be split based on double enter spaces. 
 
 
     CHAPTER TITLE: {chapter_title}
