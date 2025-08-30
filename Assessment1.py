@@ -182,10 +182,9 @@ def main():
         st.subheader("📅 오늘의 문제")
 
         # 문제를 session_state에 저장 (처음 한 번만)
- 
         if st.session_state.daily_question is None:
             question_prompt = f""" 
-    In the below BOOK:, I've provided you with the Guesstimation book that you are going to use. 
+                In the below BOOK:, I've provided you with the Guesstimation book that you are going to use. 
 
             You are supposed to create a Guesstimation problem based on the book content for a student who does not have a time to read the book.
 
@@ -198,70 +197,45 @@ def main():
             Provide the question in Korean. The problem must be randomly chosen as the user will use this service multiple times so it does not overlap with the previous studies.
 
             ###
-
             BOOK:
 
             {book_content}  # token 제한 있으면 앞부분 일부만 전달 [:4000]
 
             ###
+
+
             """
-            st.session_state.daily_question_prompt = question_prompt
             st.session_state.daily_question = ask_gpt(question_prompt)
 
         # 항상 문제 출력
         st.markdown(f"**문제:** {st.session_state.daily_question}")
 
-        # 답변 입력
-        if "daily_answer" not in st.session_state:
-            st.session_state.daily_answer = ""
+        # 모범 답안 보기 버튼
+        if st.button("💡 모범 답안 보기", key="show_solution"):
+            solution_prompt = f"""
+            Below is a Guesstimation question. 
+            Please provide the following in Korean:
 
-        user_answer = st.text_area("✏️ 당신의 답변을 입력하세요", 
-                                value=st.session_state.daily_answer, 
-                                height=150)
+            1. A model answer with reasonable assumptions.
+            2. Step-by-step reasoning / how to approach.
+            3. Useful tips for solving similar problems.
 
-        # 입력값을 세션에 저장
-
-        st.session_state.daily_answer = user_answer
-
-        # 제출 버튼
-        if st.button("제출", key="daily_submit"):
-            eval_prompt = f"""
-            The ANSWER below provides the user's answer to the question.
-                Please do the following:
-
-                Please provide a feedback or a comment to the user based on their answer for them to get better understanding of the question and to approach the problem in a better way.
-                While providing the feedback, make sure that you do not evalute them, or mention that it is correct or not, but rather provide a feedback that helps them to understand the concept better.
-                Also provide a short positive feedback to encourage them to keep going.
-                Make sure the feedback is in Korean.. 
-
-                ###
-                QUESTION: {st.session_state.daily_question}
-                ANSWER: {user_answer}
+            QUESTION: {st.session_state.daily_question}
             """
-            
-            st.session_state.daily_feedback = ask_gpt(eval_prompt)
-            
-            # Create a placeholder
-            placeholder = st.empty()
+            st.session_state.daily_solution = ask_gpt(solution_prompt)
 
-            # Show a temporary message
-            placeholder.write("⏳ 잠시만 기다려 주세요...")
+        # 모범 답안 출력
+        if "daily_solution" in st.session_state and st.session_state.daily_solution:
+            st.markdown("### ✅ 모범 답안 & 풀이 가이드")
+            st.markdown(st.session_state.daily_solution)
 
-            # Simulate some work (e.g., GPT call)
-            time.sleep(3)
-
-
-            st.markdown("#### 📊 피드백 결과")
-            st.markdown(st.session_state.daily_feedback)
-
-        # 리셋 버튼 (다시 새로운 문제 받고 싶을 때)
+        # 새 문제 받기 버튼
         if st.button("🔄 새 문제 받기", key="reset_daily"):
-            del st.session_state.daily_question
-            del st.session_state.daily_question_prompt
-            if "daily_feedback" in st.session_state:
-                del st.session_state.daily_feedback
-            st.session_state.daily_answer = ""
+            st.session_state.daily_question = None
+            if "daily_solution" in st.session_state:
+                del st.session_state.daily_solution
             st.rerun()
+
     # -------------------------------
     # 7. 공부 모드
     # -------------------------------
