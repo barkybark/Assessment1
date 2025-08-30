@@ -236,6 +236,9 @@ def main():
             if "daily_solution" in st.session_state:
                 del st.session_state.daily_solution
             st.rerun()
+                # 👉 나가기 버튼 추가
+        if st.button("나가기", key="exit_daily"):
+            st.session_state.mode = None
 
     # -------------------------------
     # 7. 공부 모드
