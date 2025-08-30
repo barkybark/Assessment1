@@ -208,7 +208,8 @@ def main():
             st.session_state.daily_question = ask_gpt(question_prompt)
 
         # 항상 문제 출력
-        st.markdown(f"**문제:** {st.session_state.daily_question}")
+        st.markdown("아래 문제를 하나 낼 테니, 차근차근 생각해 보고 후에 모범 답안과 비교해 보세요.")
+        st.markdown(f"{st.session_state.daily_question}")
 
         # 모범 답안 보기 버튼
         if st.button("💡 모범 답안 보기", key="show_solution"):
