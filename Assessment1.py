@@ -323,23 +323,14 @@ def main():
         # 세션 상태 초기화
         if "chapter" not in st.session_state:
             st.session_state.chapter = list(chapters.keys())[0]
-        if "step" not in st.session_state:
-            st.session_state.step = 1
         if "chapter_summary" not in st.session_state:
             st.session_state.chapter_summary = ""
-        if "study_pages" not in st.session_state:
-            st.session_state.study_pages = []
-        if "study_page" not in st.session_state:
-            st.session_state.study_page = 0
 
         # 사이드바에서 챕터 선택
         selected_chapter = st.sidebar.radio("Chapters", list(chapters.keys()))
         if selected_chapter != st.session_state.chapter:
             st.session_state.chapter = selected_chapter
-            st.session_state.step = 1
             st.session_state.chapter_summary = ""
-            st.session_state.study_pages = []
-            st.session_state.study_page = 0
 
         # 현재 챕터 내용
         current_chapter = st.session_state.chapter
@@ -348,32 +339,18 @@ def main():
         # GPT 요약 호출 (처음 한 번만)
         if st.session_state.chapter_summary == "":
             raw_summary = summarize_with_gpt(
-                current_chapter, chapter_text, st.session_state.step
+                current_chapter, chapter_text, step=1  # step은 고정
             )
-            # 청크 단위로 분할 (두 줄 공백 기준 or 원하는 기준)
-            st.session_state.study_pages = raw_summary.split("\n\n")
             st.session_state.chapter_summary = raw_summary
 
-        # 현재 페이지 표시
+        # 챕터 전체 요약 표시
         st.markdown(f"### {current_chapter}")
-        current_page = st.session_state.study_page
-        total_pages = len(st.session_state.study_pages)
-        st.write(st.session_state.study_pages[current_page])
-
-        # 페이지 네비게이션 버튼
-        col1, col2, col3 = st.columns([1,2,1])
-        with col1:
-            if st.button("⬅️ 이전", disabled=current_page == 0):
-                st.session_state.study_page -= 1
-                st.rerun()
-        with col3:
-            if st.button("다음 ➡️", disabled=current_page >= total_pages-1):
-                st.session_state.study_page += 1
-                st.rerun()
+        st.write(st.session_state.chapter_summary)
 
         # 나가기 버튼
         if st.button("나가기", key="exit"):
             st.session_state.mode = None
+
 
         #     st.session_state.step = 1
         #     st.session_state.chapter_summary = summarize_with_gpt(
