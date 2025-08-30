@@ -341,8 +341,8 @@ def main():
     # 👉 여기에 격려 버튼 추가
     if st.button("🌟 오늘의 격려 한마디", key="encouragement", use_container_width=True):
         encouragement_prompt = """
-        Please write a short but sincere encouragement message in Korean for people using this service to study Guesstimation.
-        The message should be short but sincere, providing positive energy without being overwhelming.
+        Please write a short but sincere encouragement message in Korean for people using this service to study.
+        The message should be simple, providing positive energy without being overwhelming.
         """
         encouragement = ask_gpt(encouragement_prompt)
         st.success(encouragement)
