@@ -368,6 +368,30 @@ def main():
         순차적으로 익혀 보세요:
         """, unsafe_allow_html=True
     )
+    col1, col2, col3 = st.columns(3)
+
+    button_style = """
+    <style>
+    a.custom-button {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #2C7BE5;
+        color: white !important;
+        padding: 12px 0;
+        text-decoration: none;
+        border-radius: 10px;
+        font-weight: bold;
+        font-size: 16px;
+        width: 100%;
+        height: 50px;
+    }
+    a.custom-button:hover {
+        background-color: #1A5BB8;
+        text-decoration: none;
+    }
+    </style>
+    """
 
     st.markdown(button_style, unsafe_allow_html=True)
 
@@ -379,8 +403,6 @@ def main():
 
     with col3:
         st.markdown('<a class="custom-button" href="https://www.insightbay.co.kr/classes/view/4" target="_blank">③ 전략 PPT</a>', unsafe_allow_html=True)
-
-
 
 
 if __name__ == "__main__":
