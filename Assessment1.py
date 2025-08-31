@@ -347,6 +347,36 @@ def main():
         encouragement = ask_gpt(encouragement_prompt)
         st.success(encouragement)
 
+    st.write("")
+    
+    st.markdown("---")
+    st.markdown("### 📢 추가 학습 & 자료 안내")
+
+    st.markdown(
+        """
+        **Guesstimation 충분히 익혔나요?**  
+        Guesstimation은 **PDF**로 한 번에 정리해 보는 것도 좋습니다.  
+        """
+    )
+    st.link_button("📘 Guesstimation PDF 바로가기", "https://www.insightbay.co.kr/books/view/5")
+
+    st.write("")
+    st.markdown(
+        """
+        이제 다음 루틴으로 넘어가 봅시다.  
+        아이컨 회원 **67%**가 아래 루틴을 따릅니다.  
+        순차적으로 익혀 보세요:
+        """
+    )
+
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        st.link_button("① 컨설팅 리서치 강의", "https://www.insightbay.co.kr/classes/view/21")
+    with col2:
+        st.link_button("② 전략 Excel", "https://www.insightbay.co.kr/classes/view/1")
+    with col3:
+        st.link_button("③ 전략 PPT", "https://www.insightbay.co.kr/classes/view/4")
+
 
 
 
