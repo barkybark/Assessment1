@@ -364,19 +364,21 @@ def main():
     st.markdown(
         """
         이제 다음 루틴으로 넘어가 봅시다.  
-        아이컨 회원 **67%**가 아래 루틴을 따릅니다.  
+        아이컨 회원 <b>67%</b>가 아래 루틴을 따릅니다.  
         순차적으로 익혀 보세요:
-        """
+        """, unsafe_allow_html=True
     )
 
-    col1, col2, col3 = st.columns(3)
-    with col1:
-        st.link_button("① 컨설팅 리서치 강의", "https://www.insightbay.co.kr/classes/view/21")
-    with col2:
-        st.link_button("② 전략 Excel", "https://www.insightbay.co.kr/classes/view/1")
-    with col3:
-        st.link_button("③ 전략 PPT", "https://www.insightbay.co.kr/classes/view/4")
+    st.markdown(button_style, unsafe_allow_html=True)
 
+    with col1:
+        st.markdown('<a class="custom-button" href="https://www.insightbay.co.kr/classes/view/21" target="_blank">① 컨설팅 리서치 강의</a>', unsafe_allow_html=True)
+
+    with col2:
+        st.markdown('<a class="custom-button" href="https://www.insightbay.co.kr/classes/view/1" target="_blank">② 전략 Excel</a>', unsafe_allow_html=True)
+
+    with col3:
+        st.markdown('<a class="custom-button" href="https://www.insightbay.co.kr/classes/view/4" target="_blank">③ 전략 PPT</a>', unsafe_allow_html=True)
 
 
 
