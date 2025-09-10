@@ -238,11 +238,16 @@ def main():
         if st.button("🔄 새 문제 받기", key="reset_daily"):
             placeholder = st.empty()
             placeholder.write("⏳ 잠시만 기다려 주세요...")
+
+            # 먼저 기존 문제/답안 초기화
             st.session_state.daily_question = None
             if "daily_solution" in st.session_state:
                 del st.session_state.daily_solution
+
+            # 그 다음 rerun 실행
             st.rerun()
             placeholder.empty()
+  
                 # 👉 나가기 버튼 추가
         if st.button("나가기", key="exit_daily"):
             st.session_state.mode = None
