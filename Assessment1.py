@@ -251,6 +251,14 @@ def main():
                 # 👉 나가기 버튼 추가
         if st.button("나가기", key="exit_daily"):
             st.session_state.mode = None
+            
+            if "daily_question" in st.session_state:
+                del st.session_state.daily_question
+            if "daily_solution" in st.session_state:
+                del st.session_state.daily_solution
+            if "daily_feedback" in st.session_state:
+                del st.session_state.daily_feedback
+
 
     # -------------------------------
     # 7. 공부 모드
@@ -346,6 +354,13 @@ def main():
         # 나가기 버튼
         if st.button("나가기", key="exit"):
             st.session_state.mode = None
+            # 관련 상태 초기화
+            if "chapter" in st.session_state:
+                del st.session_state.chapter
+            if "chapter_summary" in st.session_state:
+                del st.session_state.chapter_summary
+            if "study_index" in st.session_state:
+                del st.session_state.study_index
 
 
         #     st.session_state.step = 1
