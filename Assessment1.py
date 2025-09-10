@@ -68,7 +68,13 @@ def split_chapters(full_text):
 
 
 def summarize_with_gpt(chapter_title, chapter_text, step):
-    st.write("잠시만 기다려 주세요...")
+    # 임시 메시지 표시
+    placeholder = st.empty()
+    placeholder.write("⏳ 잠시만 기다려 주세요...")
+
+    # 3초 기다렸다가 메시지 지움
+    time.sleep(5)
+    placeholder.empty()
     prompt = f"""
     You are a professional tutor helping a student study "Guesstimation".
     The BOOK CHAPTER below is from a Guesstimation book.
