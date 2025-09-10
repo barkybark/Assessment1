@@ -69,12 +69,7 @@ def split_chapters(full_text):
 
 def summarize_with_gpt(chapter_title, chapter_text, step):
     # 임시 메시지 표시
-    placeholder = st.empty()
-    placeholder.write("⏳ 잠시만 기다려 주세요...")
 
-    # 3초 기다렸다가 메시지 지움
-    time.sleep(5)
-    placeholder.empty()
     prompt = f"""
     You are a professional tutor helping a student study "Guesstimation".
     The BOOK CHAPTER below is from a Guesstimation book.
@@ -298,6 +293,10 @@ def main():
         st.subheader("📚 공부 모드 시작")
         st.write("사이드 바에서 원하는 챕터를 선택하고, 해당되는 챕터를 학습해 보세요.")
         st.write("")
+        placeholder = st.empty()
+        placeholder.write("⏳ 잠시만 기다려 주세요...")
+
+       
 
         # 책 불러오기 & 챕터 나누기
         docx_path = "guesstimation.docx"
@@ -320,12 +319,14 @@ def main():
         current_chapter = st.session_state.chapter
         chapter_text = chapters[current_chapter]
 
+
         # GPT 요약 호출 (처음 한 번만)
         if st.session_state.chapter_summary == "":
             raw_summary = summarize_with_gpt(
                 current_chapter, chapter_text, step=1  # step은 고정
             )
             st.session_state.chapter_summary = raw_summary
+        placeholder.empty()
 
         # 챕터 전체 요약 표시
         st.markdown(f"### {current_chapter}")
