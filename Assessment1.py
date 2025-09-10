@@ -214,6 +214,8 @@ def main():
 
         # 모범 답안 보기 버튼
         if st.button("💡 모범 답안 보기", key="show_solution"):
+            placeholder = st.empty()
+            placeholder.write("⏳ 잠시만 기다려 주세요...")
             solution_prompt = f"""
             Below is a Guesstimation question. 
             Please provide the following in Korean:
@@ -225,6 +227,7 @@ def main():
             QUESTION: {st.session_state.daily_question}
             """
             st.session_state.daily_solution = ask_gpt(solution_prompt)
+            placeholder.empty()
 
         # 모범 답안 출력
         if "daily_solution" in st.session_state and st.session_state.daily_solution:
@@ -233,10 +236,13 @@ def main():
 
         # 새 문제 받기 버튼
         if st.button("🔄 새 문제 받기", key="reset_daily"):
+            placeholder = st.empty()
+            placeholder.write("⏳ 잠시만 기다려 주세요...")
             st.session_state.daily_question = None
             if "daily_solution" in st.session_state:
                 del st.session_state.daily_solution
             st.rerun()
+            placeholder.empty()
                 # 👉 나가기 버튼 추가
         if st.button("나가기", key="exit_daily"):
             st.session_state.mode = None
