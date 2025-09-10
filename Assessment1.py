@@ -181,10 +181,7 @@ def main():
 # daily_mode 유지
     if st.session_state.mode == "daily":
         st.subheader("📅 오늘의 문제")
-        if "daily_solution_placeholder" not in st.session_state:
-            st.session_state.daily_solution_placeholder = st.empty()
-            st.session_state.daily_solution_placeholder.write("⏳ 잠시만 기다려 주세요...")
-   
+
 
         # 문제를 session_state에 저장 (처음 한 번만)
         if st.session_state.daily_question is None:
@@ -211,8 +208,7 @@ def main():
 
             """
             st.session_state.daily_question = ask_gpt(question_prompt)
-            # 답안 다 받으면
-            st.session_state.daily_solution_placeholder.empty()
+  
 
 
         # 항상 문제 출력
