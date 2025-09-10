@@ -181,6 +181,8 @@ def main():
 # daily_mode 유지
     if st.session_state.mode == "daily":
         st.subheader("📅 오늘의 문제")
+        placeholder = st.empty()
+        placeholder.write("⏳ 잠시만 기다려 주세요...")
 
         # 문제를 session_state에 저장 (처음 한 번만)
         if st.session_state.daily_question is None:
@@ -207,6 +209,7 @@ def main():
 
             """
             st.session_state.daily_question = ask_gpt(question_prompt)
+            placeholder.empty()
 
         # 항상 문제 출력
         st.markdown("아래 문제를 하나 낼 테니, 차근차근 생각해 보고 후에 모범 답안과 비교해 보세요.")
@@ -251,7 +254,7 @@ def main():
                 # 👉 나가기 버튼 추가
         if st.button("나가기", key="exit_daily"):
             st.session_state.mode = None
-            
+
             if "daily_question" in st.session_state:
                 del st.session_state.daily_question
             if "daily_solution" in st.session_state:
