@@ -141,8 +141,8 @@ def main():
 
     st.markdown(
         """
-        **환영합니다!**  
-        이 앱은 게스티메이션 책을 기준으로 공부를 하기 위한 AI 기반 학습 도구입니다.  
+        **환영합니다.**  
+        이 AI앱은 아이컨/인사이트베이의 게스트메이션 가이드북을 기준으로 공부하기 위해서 만들어졌습니다.  
 
 
         아래에서 모드를 선택하세요.
@@ -313,57 +313,65 @@ def main():
 
     if st.session_state.mode == "study":
         st.subheader("📚 공부 모드 시작")
-        st.write("사이드 바에서 원하는 챕터를 선택하고, 해당되는 챕터를 학습해 보세요.")
+        st.write("챕터를 순서대로 보거나 아래 버튼을 눌러 이동하세요.")
         st.write("")
-        placeholder = st.empty()
-        placeholder.write("⏳ 잠시만 기다려 주세요...")
 
-       
+        # ⏳ 로딩 메시지
+        if "study_placeholder" not in st.session_state:
+            st.session_state.study_placeholder = st.empty()
+        st.session_state.study_placeholder.write("⏳ 잠시만 기다려 주세요...")
 
         # 책 불러오기 & 챕터 나누기
-        docx_path = "guesstimation.docx"
-        full_text = load_docx(docx_path)
+        full_text = load_docx("guesstimation.docx")
         chapters = split_chapters(full_text)
+        chapter_list = list(chapters.keys())
 
-        # 세션 상태 초기화
-        if "chapter" not in st.session_state:
-            st.session_state.chapter = list(chapters.keys())[0]
-        if "chapter_summary" not in st.session_state:
-            st.session_state.chapter_summary = ""
-
-        # 사이드바에서 챕터 선택
-        selected_chapter = st.sidebar.radio("Chapters", list(chapters.keys()))
-        if selected_chapter != st.session_state.chapter:
-            st.session_state.chapter = selected_chapter
-            st.session_state.chapter_summary = ""
-
-        # 현재 챕터 내용
-        current_chapter = st.session_state.chapter
+        # 현재 챕터 초기화
+        if "chapter_idx" not in st.session_state:
+            st.session_state.chapter_idx = 0
+        current_chapter = chapter_list[st.session_state.chapter_idx]
         chapter_text = chapters[current_chapter]
 
+        # GPT 요약 (처음 한 번만)
+        key_summary = f"summary_{current_chapter}"
+        if key_summary not in st.session_state:
+            st.session_state[key_summary] = summarize_with_gpt(current_chapter, chapter_text, step=1)
+        st.session_state.study_placeholder.empty()
 
-        # GPT 요약 호출 (처음 한 번만)
-        if st.session_state.chapter_summary == "":
-            raw_summary = summarize_with_gpt(
-                current_chapter, chapter_text, step=1  # step은 고정
-            )
-            st.session_state.chapter_summary = raw_summary
-        placeholder.empty()
-
-        # 챕터 전체 요약 표시
+        # 📄 요약 표시
         st.markdown(f"### {current_chapter}")
-        st.write(st.session_state.chapter_summary)
+        st.write(st.session_state[key_summary])
 
-        # 나가기 버튼
-        if st.button("나가기", key="exit"):
-            st.session_state.mode = None
-            # 관련 상태 초기화
-            if "chapter" in st.session_state:
-                del st.session_state.chapter
-            if "chapter_summary" in st.session_state:
-                del st.session_state.chapter_summary
-            if "study_index" in st.session_state:
-                del st.session_state.study_index
+        st.write("---")
+        col1, col2, col3, col4 = st.columns([1,1,1,1])
+
+        with col1:  # ◀️ 이전 챕터
+            if st.button("◀️ 이전 챕터", use_container_width=True):
+                if st.session_state.chapter_idx > 0:
+                    st.session_state.chapter_idx -= 1
+                    st.rerun()
+
+        with col2:  # ▶️ 다음 챕터
+            if st.button("다음 챕터 ▶️", use_container_width=True):
+                if st.session_state.chapter_idx < len(chapter_list) - 1:
+                    st.session_state.chapter_idx += 1
+                    st.rerun()
+
+        with col3:  # 🌟 오늘의 격려
+            if st.button("🌟 오늘의 격려", use_container_width=True):
+                encouragement_prompt = """
+                Please write a short but sincere encouragement message in Korean 
+                for people studying with this app.
+                """
+                st.success(ask_gpt(encouragement_prompt))
+
+        with col4:  # 🔙 처음으로 가기
+            if st.button("🔙 처음으로 가기", use_container_width=True):
+                st.session_state.mode = None
+                for k in list(st.session_state.keys()):
+                    if k.startswith("summary_") or k in ["chapter_idx", "study_placeholder"]:
+                        del st.session_state[k]
+                st.rerun()
 
 
         #     st.session_state.step = 1
