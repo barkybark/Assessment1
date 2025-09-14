@@ -415,6 +415,15 @@ def main():
         # 📌 여기에 챕터 바로가기 버튼 추가
         st.write("### 🔎 원하는 챕터로 바로 가기")
 
+        chapter_cols = st.columns(2)  # 3개씩 나란히
+        for i, chap in enumerate(chapter_list):
+            col = chapter_cols[i % 2]
+            with col:
+                if st.button(chap, key=f"jump_{i}", use_container_width=True):
+                    st.session_state.chapter_idx = i
+                    st.session_state.chapter_part = 0
+                    st.rerun()
+
         st.write("")  # 간격 주기
         st.markdown("### 🌟 오늘의 격려")
         if st.button("격려 한마디 듣기", use_container_width=True, key="study_encourage"):
@@ -424,14 +433,7 @@ def main():
             """
             st.success(ask_gpt(encouragement_prompt))
 
-        chapter_cols = st.columns(2)  # 3개씩 나란히
-        for i, chap in enumerate(chapter_list):
-            col = chapter_cols[i % 2]
-            with col:
-                if st.button(chap, key=f"jump_{i}", use_container_width=True):
-                    st.session_state.chapter_idx = i
-                    st.session_state.chapter_part = 0
-                    st.rerun()
+        
 
 
         #     st.session_state.step = 1
