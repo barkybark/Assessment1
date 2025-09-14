@@ -366,21 +366,21 @@ def main():
 
         # 스크롤 가능한 영역에 요약 출력 (HTML로 줄바꿈 보존)
         content_html = st.session_state[safe_key].replace("\n", "<br>")
-        scroll_box = f"""
-        <div style="
-            height:600px;
-            overflow-y:auto;
-            padding:18px;
-            border:1px solid #eee;
-            border-radius:8px;
-            background: #ffffff;
-            line-height:1.6;
-            ">
-            {content_html}
-        </div>
-        """
+        # scroll_box = f"""
+        # <div style="
+        #     height:600px;
+        #     overflow-y:auto;
+        #     padding:18px;
+        #     border:1px solid #eee;
+        #     border-radius:8px;
+        #     background: #ffffff;
+        #     line-height:1.6;
+        #     ">
+        #     {content_html}
+        # </div>
+        # """
         st.markdown(f"### {selected}")
-        st.markdown(scroll_box, unsafe_allow_html=True)
+        # st.markdown(scroll_box, unsafe_allow_html=True)
 
         st.write("---")
 
