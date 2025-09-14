@@ -429,7 +429,7 @@ def main():
 
         chapter_cols = st.columns(2)  # 3개씩 나란히
         for i, chap in enumerate(chapter_list):
-            col = chapter_cols[i % 42]
+            col = chapter_cols[i % 2]
             with col:
                 if st.button(chap, key=f"jump_{i}", use_container_width=True):
                     st.session_state.chapter_idx = i
