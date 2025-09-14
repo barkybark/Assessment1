@@ -330,108 +330,95 @@ def main():
     #             st.markdown(feedback)
 
     if st.session_state.mode == "study":
-        st.subheader("📚 공부 모드 시작")
-        st.write("챕터를 순서대로 보거나, 아래 버튼을 눌러 이동하세요.")
+        st.subheader("📚 공부 모드")
+        st.write("사이드바에서 챕터를 선택하거나 아래 버튼으로 이동하세요.")
         st.write("")
 
-        # 챕터/파트 인덱스 초기화
-        if "chapter_idx" not in st.session_state:
-            st.session_state.chapter_idx = 0
-        if "chapter_part" not in st.session_state:
-            st.session_state.chapter_part = 0
-
-        # 로딩 표시
-        if "study_placeholder" not in st.session_state:
-            st.session_state.study_placeholder = st.empty()
-        st.session_state.study_placeholder.write("⏳ 잠시만 기다려 주세요...")
-
-        # 책 → 챕터 → 세부 섹션
+        # 책 불러오기 & 챕터 리스트
         full_text = load_docx("guesstimation.docx")
         chapters = split_chapters(full_text)
         chapter_list = list(chapters.keys())
 
-        current_chapter = chapter_list[st.session_state.chapter_idx]
-        chapter_text = chapters[current_chapter]
-        sections = split_into_sections(chapter_text, max_len=600)   # ← 추가
+        # 사이드바에 selectbox (선택 값은 session_state['selected_chapter']에 저장됨)
+        # 기본 인덱스는 session_state에 있으면 유지
+        default_idx = st.session_state.get("chapter_idx", 0)
+        # 안전하게 인덱스 범위 맞추기
+        if default_idx < 0 or default_idx >= len(chapter_list):
+            default_idx = 0
+        selected = st.sidebar.selectbox("챕터 선택", chapter_list, index=default_idx, key="selected_chapter")
+        # session_state.chapter_idx 업데이트 (다른 버튼에서 사용하려고)
+        st.session_state["chapter_idx"] = chapter_list.index(selected)
 
-        # 현재 part에 맞는 키 생성
-        key_summary = f"summary_{current_chapter}_{st.session_state.chapter_part}"
+        # 로딩 플레이스홀더
+        placeholder = st.empty()
+        placeholder.write("⏳ 요약을 불러옵니다...")
 
-        if key_summary not in st.session_state:
-            st.session_state[key_summary] = summarize_with_gpt(
-                current_chapter,
-                sections[st.session_state.chapter_part],
-                step=st.session_state.chapter_part + 1,
-            )
+        # 안전한 키 (공백제거)
+        safe_key = "summary_" + selected.replace(" ", "_")
 
-        st.session_state.study_placeholder.empty()
+        # 캐시: 해당 챕터의 요약이 없으면 GPT 호출해서 생성
+        if safe_key not in st.session_state:
+            chapter_text_str = "\n".join(chapters[selected])  # 챕터 본문을 문자열로
+            st.session_state[safe_key] = summarize_with_gpt(selected, chapter_text_str, step=1)
 
-        # 표시
-        st.markdown(f"### {current_chapter}")
-        st.write(st.session_state[key_summary])
+        # 로딩 표시 제거
+        placeholder.empty()
+
+        # 스크롤 가능한 영역에 요약 출력 (HTML로 줄바꿈 보존)
+        content_html = st.session_state[safe_key].replace("\n", "<br>")
+        scroll_box = f"""
+        <div style="
+            height:600px;
+            overflow-y:auto;
+            padding:18px;
+            border:1px solid #eee;
+            border-radius:8px;
+            background: #ffffff;
+            line-height:1.6;
+            ">
+            {content_html}
+        </div>
+        """
+        st.markdown(f"### {selected}")
+        st.markdown(scroll_box, unsafe_allow_html=True)
 
         st.write("---")
+
+        # 이전 / 다음 / 첫화면 / 격려 버튼
         col1, col2, col3, col4 = st.columns([1,1,1,1])
 
-        # ◀️ 이전 part
-        with col1:
-            if st.button("◀️ 이전", use_container_width=True):
-                if st.session_state.chapter_part > 0:
-                    st.session_state.chapter_part -= 1
-                    st.rerun()
-                elif st.session_state.chapter_idx > 0:  # 이전 챕터로
-                    st.session_state.chapter_idx -= 1
-                    prev_chap = chapter_list[st.session_state.chapter_idx]
-                    prev_sections = split_into_sections(chapters[prev_chap], max_len=600)
-                    st.session_state.chapter_part = len(prev_sections) - 1
-                    st.rerun()
+        with col1:  # 이전 챕터
+            if st.button("◀️ 이전 챕터", use_container_width=True):
+                idx = st.session_state["chapter_idx"]
+                if idx > 0:
+                    st.session_state["chapter_idx"] = idx - 1
+                    st.session_state["selected_chapter"] = chapter_list[idx - 1]  # selectbox 값 갱신
+                    st.experimental_rerun()
 
-        # ▶️ 다음 part
-        with col2:
-            if st.button("다음 ▶️", use_container_width=True):
-                if st.session_state.chapter_part < len(sections) - 1:
-                    st.session_state.chapter_part += 1
-                    st.rerun()
-                elif st.session_state.chapter_idx < len(chapter_list) - 1:
-                    st.session_state.chapter_idx += 1
-                    st.session_state.chapter_part = 0
-                    st.rerun()
+        with col2:  # 다음 챕터
+            if st.button("다음 챕터 ▶️", use_container_width=True):
+                idx = st.session_state["chapter_idx"]
+                if idx < len(chapter_list) - 1:
+                    st.session_state["chapter_idx"] = idx + 1
+                    st.session_state["selected_chapter"] = chapter_list[idx + 1]
+                    st.experimental_rerun()
 
-        # 🔙 처음으로
-        with col3:
-            if st.button("🔙 처음으로", use_container_width=True):
-                st.session_state.mode = None
+        with col3:  # 오늘의 격려
+            if st.button("🌟 오늘의 격려", use_container_width=True):
+                msg_prompt = """
+                Please write a short but sincere encouragement message in Korean 
+                for people studying with this app.
+                """
+                st.success(ask_gpt(msg_prompt))
+
+        with col4:  # 처음으로
+            if st.button("🔙 처음으로 가기", use_container_width=True):
+                # 공부 모드 관련 캐시(요약)만 삭제
                 for k in list(st.session_state.keys()):
-                    if k.startswith("summary_") or k in ["chapter_idx", "chapter_part", "study_placeholder"]:
+                    if k.startswith("summary_") or k in ["chapter_idx", "selected_chapter"]:
                         del st.session_state[k]
-                st.rerun()
-
-        # (옵션) 챕터 위치 안내
-        with col4:
-            st.caption(f"{st.session_state.chapter_part+1} / {len(sections)}")
-        
-        st.caption(f"{st.session_state.chapter_part+1} / {len(sections)}")
-
-        # 📌 여기에 챕터 바로가기 버튼 추가
-        st.write("### 🔎 원하는 챕터로 바로 가기")
-
-        chapter_cols = st.columns(2)  # 3개씩 나란히
-        for i, chap in enumerate(chapter_list):
-            col = chapter_cols[i % 2]
-            with col:
-                if st.button(chap, key=f"jump_{i}", use_container_width=True):
-                    st.session_state.chapter_idx = i
-                    st.session_state.chapter_part = 0
-                    st.rerun()
-
-        st.write("")  # 간격 주기
-        st.markdown("### 🌟 오늘의 격려")
-        if st.button("격려 한마디 듣기", use_container_width=True, key="study_encourage"):
-            encouragement_prompt = """
-            Please write a short but sincere encouragement message in Korean 
-            for people studying with this app.
-            """
-            st.success(ask_gpt(encouragement_prompt))
+                st.session_state.mode = None
+                st.experimental_rerun()
 
         
 
