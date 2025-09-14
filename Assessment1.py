@@ -115,7 +115,7 @@ def reset_daily():
     st.session_state.mode = "daily"
 
 # 챕터 본문을 일정 길이로 나누기
-def split_into_sections(text_lines, max_len=1000):  # 글자 수 단위
+def split_into_sections(text_lines, max_len=300):  # 글자 수 단위
     sections, buffer, size = [], [], 0
     for line in text_lines:
         if size + len(line) > max_len and buffer:
