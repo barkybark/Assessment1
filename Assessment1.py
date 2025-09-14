@@ -114,6 +114,20 @@ def reset_daily():
     st.session_state.daily_answer = None
     st.session_state.mode = "daily"
 
+# 챕터 본문을 일정 길이로 나누기
+def split_into_sections(text_lines, max_len=800):  # 글자 수 단위
+    sections, buffer, size = [], [], 0
+    for line in text_lines:
+        if size + len(line) > max_len and buffer:
+            sections.append("\n".join(buffer))
+            buffer, size = [line], len(line)
+        else:
+            buffer.append(line)
+            size += len(line)
+    if buffer:
+        sections.append("\n".join(buffer))
+    return sections
+
 def main():
 
     if "daily_question" not in st.session_state:
@@ -251,16 +265,23 @@ def main():
             st.rerun()
             placeholder.empty()
   
-                # 👉 나가기 버튼 추가
-        if st.button("나가기", key="exit_daily"):
-            st.session_state.mode = None
+        col1, col2 = st.columns([1,1])
 
-            if "daily_question" in st.session_state:
-                del st.session_state.daily_question
-            if "daily_solution" in st.session_state:
-                del st.session_state.daily_solution
-            if "daily_feedback" in st.session_state:
-                del st.session_state.daily_feedback
+        with col1:
+            if st.button("🌟 오늘의 격려", key="daily_encourage", use_container_width=True):
+                msg_prompt = """
+                Please write a short but sincere encouragement message in Korean 
+                for someone solving Guesstimation problems.
+                """
+                st.success(ask_gpt(msg_prompt))
+
+        with col2:
+            if st.button("🔙 처음으로 가기", key="exit_daily_bottom", use_container_width=True):
+                st.session_state.mode = None
+                for k in ["daily_question", "daily_solution", "daily_feedback"]:
+                    if k in st.session_state:
+                        del st.session_state[k]
+                st.rerun()
 
 
     # -------------------------------
@@ -313,51 +334,74 @@ def main():
 
     if st.session_state.mode == "study":
         st.subheader("📚 공부 모드 시작")
-        st.write("챕터를 순서대로 보거나 아래 버튼을 눌러 이동하세요.")
+        st.write("챕터를 순서대로 보거나, 아래 버튼을 눌러 이동하세요.")
         st.write("")
 
-        # ⏳ 로딩 메시지
+        # 챕터/파트 인덱스 초기화
+        if "chapter_idx" not in st.session_state:
+            st.session_state.chapter_idx = 0
+        if "chapter_part" not in st.session_state:
+            st.session_state.chapter_part = 0
+
+        # 로딩 표시
         if "study_placeholder" not in st.session_state:
             st.session_state.study_placeholder = st.empty()
         st.session_state.study_placeholder.write("⏳ 잠시만 기다려 주세요...")
 
-        # 책 불러오기 & 챕터 나누기
+        # 책 → 챕터 → 세부 섹션
         full_text = load_docx("guesstimation.docx")
         chapters = split_chapters(full_text)
         chapter_list = list(chapters.keys())
 
-        # 현재 챕터 초기화
-        if "chapter_idx" not in st.session_state:
-            st.session_state.chapter_idx = 0
         current_chapter = chapter_list[st.session_state.chapter_idx]
         chapter_text = chapters[current_chapter]
+        sections = split_into_sections(chapter_text, max_len=600)   # ← 추가
 
-        # GPT 요약 (처음 한 번만)
-        key_summary = f"summary_{current_chapter}"
+        # 현재 part에 맞는 키 생성
+        key_summary = f"summary_{current_chapter}_{st.session_state.chapter_part}"
+
         if key_summary not in st.session_state:
-            st.session_state[key_summary] = summarize_with_gpt(current_chapter, chapter_text, step=1)
+            st.session_state[key_summary] = summarize_with_gpt(
+                current_chapter,
+                sections[st.session_state.chapter_part],
+                step=st.session_state.chapter_part + 1,
+            )
+
         st.session_state.study_placeholder.empty()
 
-        # 📄 요약 표시
+        # 표시
         st.markdown(f"### {current_chapter}")
         st.write(st.session_state[key_summary])
 
         st.write("---")
-        col1, col2, col3, col4 = st.columns([1,1,1,1])
+        col1, col2, col3, col4, col5 = st.columns([1,1,1,1,1])
 
-        with col1:  # ◀️ 이전 챕터
-            if st.button("◀️ 이전 챕터", use_container_width=True):
-                if st.session_state.chapter_idx > 0:
+        # ◀️ 이전 part
+        with col1:
+            if st.button("◀️ 이전", use_container_width=True):
+                if st.session_state.chapter_part > 0:
+                    st.session_state.chapter_part -= 1
+                    st.rerun()
+                elif st.session_state.chapter_idx > 0:  # 이전 챕터로
                     st.session_state.chapter_idx -= 1
+                    prev_chap = chapter_list[st.session_state.chapter_idx]
+                    prev_sections = split_into_sections(chapters[prev_chap], max_len=600)
+                    st.session_state.chapter_part = len(prev_sections) - 1
                     st.rerun()
 
-        with col2:  # ▶️ 다음 챕터
-            if st.button("다음 챕터 ▶️", use_container_width=True):
-                if st.session_state.chapter_idx < len(chapter_list) - 1:
+        # ▶️ 다음 part
+        with col2:
+            if st.button("다음 ▶️", use_container_width=True):
+                if st.session_state.chapter_part < len(sections) - 1:
+                    st.session_state.chapter_part += 1
+                    st.rerun()
+                elif st.session_state.chapter_idx < len(chapter_list) - 1:
                     st.session_state.chapter_idx += 1
+                    st.session_state.chapter_part = 0
                     st.rerun()
 
-        with col3:  # 🌟 오늘의 격려
+        # 🌟 격려 버튼
+        with col3:
             if st.button("🌟 오늘의 격려", use_container_width=True):
                 encouragement_prompt = """
                 Please write a short but sincere encouragement message in Korean 
@@ -365,13 +409,18 @@ def main():
                 """
                 st.success(ask_gpt(encouragement_prompt))
 
-        with col4:  # 🔙 처음으로 가기
-            if st.button("🔙 처음으로 가기", use_container_width=True):
+        # 🔙 처음으로
+        with col4:
+            if st.button("🔙 처음으로", use_container_width=True):
                 st.session_state.mode = None
                 for k in list(st.session_state.keys()):
-                    if k.startswith("summary_") or k in ["chapter_idx", "study_placeholder"]:
+                    if k.startswith("summary_") or k in ["chapter_idx", "chapter_part", "study_placeholder"]:
                         del st.session_state[k]
                 st.rerun()
+
+        # (옵션) 챕터 위치 안내
+        with col5:
+            st.caption(f"{st.session_state.chapter_part+1} / {len(sections)}")
 
 
         #     st.session_state.step = 1
