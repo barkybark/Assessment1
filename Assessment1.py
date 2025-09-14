@@ -427,9 +427,9 @@ def main():
         # 📌 여기에 챕터 바로가기 버튼 추가
         st.write("### 🔎 원하는 챕터로 바로 가기")
 
-        chapter_cols = st.columns(3)  # 3개씩 나란히
+        chapter_cols = st.columns(4)  # 3개씩 나란히
         for i, chap in enumerate(chapter_list):
-            col = chapter_cols[i % 3]
+            col = chapter_cols[i % 4]
             with col:
                 if st.button(chap, key=f"jump_{i}", use_container_width=True):
                     st.session_state.chapter_idx = i
