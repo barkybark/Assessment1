@@ -265,23 +265,20 @@ def main():
             st.rerun()
             placeholder.empty()
   
-        col1, col2 = st.columns([1,1])
-
-        with col1:
-            if st.button("🌟 오늘의 격려", key="daily_encourage", use_container_width=True):
-                msg_prompt = """
-                Please write a short but sincere encouragement message in Korean 
-                for someone solving Guesstimation problems.
-                """
-                st.success(ask_gpt(msg_prompt))
-
-        with col2:
             if st.button("🔙 처음으로 가기", key="exit_daily_bottom", use_container_width=True):
                 st.session_state.mode = None
                 for k in ["daily_question", "daily_solution", "daily_feedback"]:
                     if k in st.session_state:
                         del st.session_state[k]
                 st.rerun()
+       
+            st.markdown("### 🌟 오늘의 격려")
+            if st.button("격려 한마디 듣기", use_container_width=True, key="study_encourage"):
+                encouragement_prompt = """
+                Please write a short but sincere encouragement message in Korean 
+                for people studying with this app.
+                """
+                st.success(ask_gpt(encouragement_prompt))
 
 
     # -------------------------------
@@ -374,7 +371,7 @@ def main():
         st.write(st.session_state[key_summary])
 
         st.write("---")
-        col1, col2, col3, col4, col5 = st.columns([1,1,1,1,1])
+        col1, col2, col3, col4 = st.columns([1,1,1,1])
 
         # ◀️ 이전 part
         with col1:
@@ -400,17 +397,8 @@ def main():
                     st.session_state.chapter_part = 0
                     st.rerun()
 
-        # 🌟 격려 버튼
-        with col3:
-            if st.button("🌟 오늘의 격려", use_container_width=True):
-                encouragement_prompt = """
-                Please write a short but sincere encouragement message in Korean 
-                for people studying with this app.
-                """
-                st.success(ask_gpt(encouragement_prompt))
-
         # 🔙 처음으로
-        with col4:
+        with col3:
             if st.button("🔙 처음으로", use_container_width=True):
                 st.session_state.mode = None
                 for k in list(st.session_state.keys()):
@@ -419,13 +407,22 @@ def main():
                 st.rerun()
 
         # (옵션) 챕터 위치 안내
-        with col5:
+        with col4:
             st.caption(f"{st.session_state.chapter_part+1} / {len(sections)}")
         
         st.caption(f"{st.session_state.chapter_part+1} / {len(sections)}")
 
         # 📌 여기에 챕터 바로가기 버튼 추가
         st.write("### 🔎 원하는 챕터로 바로 가기")
+
+        st.write("")  # 간격 주기
+        st.markdown("### 🌟 오늘의 격려")
+        if st.button("격려 한마디 듣기", use_container_width=True, key="study_encourage"):
+            encouragement_prompt = """
+            Please write a short but sincere encouragement message in Korean 
+            for people studying with this app.
+            """
+            st.success(ask_gpt(encouragement_prompt))
 
         chapter_cols = st.columns(2)  # 3개씩 나란히
         for i, chap in enumerate(chapter_list):
