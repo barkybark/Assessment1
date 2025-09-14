@@ -8,6 +8,7 @@ from openai import OpenAI
 from PIL import Image
 from docx import Document
 import time
+import re
 
 # General Setting
 st.set_page_config(page_title="Guesstimation Trainer", layout="centered")
@@ -127,6 +128,35 @@ def split_into_sections(text_lines, max_len=50000):  # 글자 수 단위
     if buffer:
         sections.append("\n".join(buffer))
     return sections
+
+import re
+
+def split_by_concept(text_lines):
+    """
+    챕터 내용을 '개념' 단위로 나눔.
+    - '###', '■', '▶', 'Example', '예시', '문제', 'Key Takeaways' 같은 키워드로 분리
+    - 키워드가 없으면 단락 3~4개씩 묶음
+    """
+    blocks = []
+    buffer = []
+    count = 0
+    pattern = re.compile(r"(Example|예시|문제|Key Takeaway|▶|■|###)")
+
+    for line in text_lines:
+        stripped = line.strip()
+        if not stripped:
+            continue
+        # 개념 전환 신호
+        if pattern.search(stripped) or count >= 3:
+            if buffer:
+                blocks.append("\n".join(buffer))
+                buffer = []
+                count = 0
+        buffer.append(stripped)
+        count += 1
+    if buffer:
+        blocks.append("\n".join(buffer))
+    return blocks
 
 def main():
 
@@ -352,7 +382,7 @@ def main():
 
         current_chapter = chapter_list[st.session_state.chapter_idx]
         chapter_text = chapters[current_chapter]
-        sections = split_into_sections(chapter_text, max_len=600)   # ← 추가
+        sections = split_by_concept(chapter_text)   # ← 추가
 
         # 현재 part에 맞는 키 생성
         key_summary = f"summary_{current_chapter}_{st.session_state.chapter_part}"
@@ -382,7 +412,8 @@ def main():
                 elif st.session_state.chapter_idx > 0:  # 이전 챕터로
                     st.session_state.chapter_idx -= 1
                     prev_chap = chapter_list[st.session_state.chapter_idx]
-                    prev_sections = split_into_sections(chapters[prev_chap], max_len=600)
+                    
+                    prev_sections = sections = split_by_concept(chapters[prev_chap])
                     st.session_state.chapter_part = len(prev_sections) - 1
                     st.rerun()
 
