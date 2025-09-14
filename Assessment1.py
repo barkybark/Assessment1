@@ -115,7 +115,7 @@ def reset_daily():
     st.session_state.mode = "daily"
 
 # 챕터 본문을 일정 길이로 나누기
-def split_into_sections(text_lines, max_len=800):  # 글자 수 단위
+def split_into_sections(text_lines, max_len=600):  # 글자 수 단위
     sections, buffer, size = [], [], 0
     for line in text_lines:
         if size + len(line) > max_len and buffer:
@@ -421,6 +421,20 @@ def main():
         # (옵션) 챕터 위치 안내
         with col5:
             st.caption(f"{st.session_state.chapter_part+1} / {len(sections)}")
+        
+        st.caption(f"{st.session_state.chapter_part+1} / {len(sections)}")
+
+        # 📌 여기에 챕터 바로가기 버튼 추가
+        st.write("### 🔎 원하는 챕터로 바로 가기")
+
+        chapter_cols = st.columns(3)  # 3개씩 나란히
+        for i, chap in enumerate(chapter_list):
+            col = chapter_cols[i % 3]
+            with col:
+                if st.button(chap, key=f"jump_{i}", use_container_width=True):
+                    st.session_state.chapter_idx = i
+                    st.session_state.chapter_part = 0
+                    st.rerun()
 
 
         #     st.session_state.step = 1
