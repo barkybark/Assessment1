@@ -207,10 +207,13 @@ def main():
             You are supposed to create a Guesstimation problem based on the book content for a student who does not have a time to read the book.
 
             The problem can be from the book contents or not but for both, it should be suitable for a student who has just learned the key concepts of Guesstimation. 
-
+            
         
 
-            Greet the student and create a random problem based on the book content, and just a single question.
+            Greet the student and create a random problem, and just a single question.
+            To make sure that the problem is random, you can use a random number generator. 
+            Generate a number between 1 and 100, and if it is less than 50, create a problem from the book contents, otherwise create a problem that is not from the book contents but still suitable for a student who has just learned the key concepts of Guesstimation.
+            
 
             Provide the question in Korean. The problem must be randomly chosen as the user will use this service multiple times so it does not overlap with the previous studies.
 
