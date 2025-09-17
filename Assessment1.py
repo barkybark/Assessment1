@@ -206,7 +206,7 @@ def main():
 
             You are supposed to create a Guesstimation problem based on the book content for a student who does not have a time to read the book.
 
-            Make sure that the problem is from the book content, and is suitable for a student who has just learned the key concepts of Guesstimation. 
+            The problem can be from the book contents or not but for both, it should be suitable for a student who has just learned the key concepts of Guesstimation. 
 
         
 
