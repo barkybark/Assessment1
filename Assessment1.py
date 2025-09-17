@@ -45,7 +45,7 @@ def ask_gpt(prompt):
         messages=[
             {"role": "system", "content": prompt}
         ],
-        temperature=1.5
+        temperature=1
     )
     return response.choices[0].message.content
 
