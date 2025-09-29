@@ -179,7 +179,7 @@ def main():
         
     with col2:
         st.markdown("### 데일리 액서사이즈")
-        st.write("GPT가 랜덤으로 내 주는 문제를 풀고 피드백을 받아봅니다.")
+        st.write("GPT가 내 주는 문제를 풀고 피드백을 받아봅니다.")
         
     st.write("")
     col1, col2 = st.columns(2)
