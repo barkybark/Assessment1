@@ -1,4 +1,5 @@
 # import libraries
+import os
 import streamlit as st
 import openai
 from docx import Document
@@ -14,9 +15,18 @@ import re
 st.set_page_config(page_title="Guesstimation Trainer", layout="centered")
 
 # Call OpenAI API
-openai.api_key = st.secrets["OPENAI_API_KEY"]
+# openai.api_key = st.secrets["OPENAI_API_KEY"]
 # OpenAI 클라이언트 생성
-client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+# client = OpenAI(api_key=st.secrets["OPENAI_API_KEY"])
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY") or st.secrets.get("OPENAI_API_KEY", None)
+
+if not OPENAI_API_KEY:
+    # 로컬 개발 중엔 st.error를 통해 알려주고 계속 실행할 수 있게
+    st.warning("OPENAI_API_KEY가 설정되어 있지 않습니다. 로컬에서 작업 중이면 .streamlit/secrets.toml을 사용하세요.")
+
+
+openai.api_key = OPENAI_API_KEY
+client = OpenAI(api_key=OPENAI_API_KEY)
 
 # GPT 답변을 저장할 공간 생성
 if "gpt_responses" not in st.session_state:
