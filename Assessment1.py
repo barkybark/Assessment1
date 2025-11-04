@@ -177,11 +177,6 @@ def main():
     st.write("")
     st.write("")
 
-    
-   
-    
-
-
     col1, col2 = st.columns(2)
     with col1:
         st.markdown("### 공부모드")
@@ -215,8 +210,9 @@ def main():
                 In the below BOOK:, I've provided you with the Guesstimation book that you are going to use. 
 
             You are supposed to create a Guesstimation problem based on the book content for a student who does not have a time to read the book.
-
-            The problem can be from the book contents or not but for both, it should be suitable for a student who has just learned the key concepts of Guesstimation. 
+            When creating the problem, please consider the following:
+            1. When you create a problem from the book contents, make sure it is from the first half of the book (up to Chapter 2).
+            2. The problem can be from the book contents or not but for both, it should be suitable for a student who has just learned the key concepts of Guesstimation. 
             
         
 
@@ -225,7 +221,7 @@ def main():
             Generate a number between 1 and 100, and if it is less than 30, create a problem from the book contents, otherwise create a problem that is not from the book contents but still suitable for a student who has just learned the key concepts of Guesstimation.
 
 
-            Provide the question in Korean. The problem must be randomly chosen as the user will use this service multiple times so it does not overlap with the previous studies.
+            Provide the question in Korean. The problem must be randomly chosen while it satisfies the conditions above, as the user will use this service multiple times so it does not overlap with the previous studies.
 
             ###
             BOOK:
