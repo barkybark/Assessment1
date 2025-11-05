@@ -475,7 +475,7 @@ def main():
         Guesstimation은 **PDF**로 한 번에 정리해 보는 것도 좋습니다.  
         """
     )
-    st.link_button("📘 Guesstimation PDF 바로가기", "https://www.insightbay.co.kr/books/view/5")
+    st.link_button("📘 Guesstimation PDF 바로가기", "https://www.insightbay.co.kr/v2/books/view/2")
 
     st.write("")
     st.markdown(
@@ -513,13 +513,13 @@ def main():
     st.markdown(button_style, unsafe_allow_html=True)
 
     with col1:
-        st.markdown('<a class="custom-button" href="https://www.insightbay.co.kr/classes/view/21" target="_blank">① 컨설팅 리서치 강의</a>', unsafe_allow_html=True)
+        st.markdown('<a class="custom-button" href="https://www.insightbay.co.kr/v2/classes/view/9" target="_blank">① 컨설팅 리서치 강의</a>', unsafe_allow_html=True)
 
     with col2:
-        st.markdown('<a class="custom-button" href="https://www.insightbay.co.kr/classes/view/1" target="_blank">② 전략 Excel</a>', unsafe_allow_html=True)
+        st.markdown('<a class="custom-button" href="https://www.insightbay.co.kr/v2/classes/view/12" target="_blank">② 전략 Excel</a>', unsafe_allow_html=True)
 
     with col3:
-        st.markdown('<a class="custom-button" href="https://www.insightbay.co.kr/classes/view/4" target="_blank">③ 전략 PPT</a>', unsafe_allow_html=True)
+        st.markdown('<a class="custom-button" href="https://www.insightbay.co.kr/v2/classes/view/15" target="_blank">③ 전략 PPT</a>', unsafe_allow_html=True)
 
 
 if __name__ == "__main__":
